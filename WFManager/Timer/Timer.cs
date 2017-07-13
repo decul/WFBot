@@ -26,7 +26,7 @@ namespace WFManager {
 
             while (!stopped) {
                 try {
-                    Monitor.Enter(processing);
+                    //Monitor.Enter(processing);
 
                     if (events.Find(ev => ev.type == EventType.CROP) == null) 
                         events.Add(new Event(DateTime.Now, EventType.CROP));
@@ -51,10 +51,10 @@ namespace WFManager {
 
                                 case EventType.CROP:
                                     WF.LogIn();
-                                    int pId = V.Cebule;
-                                    if (DateTime.Now.Hour >= 6)
+                                    int pId = V.Truskawki;
+                                    if (DateTime.Now.Hour >= 12)
                                         pId = V.Rzepak;
-                                    if (DateTime.Now.Hour >= 17)
+                                    if (DateTime.Now.Hour >= 19)
                                         pId = V.Marchewki;
                                     if (DateTime.Now.Hour >= 22)
                                         pId = V.Zboże;
@@ -71,12 +71,17 @@ namespace WFManager {
                             SerializeEvents();
                         }
                     }
-                } catch (Exception e) {
+                } 
+                catch (ObjectDisposedException e) {
+                    stopped = true;
+                } 
+                catch (Exception e) {
+                    var type = e.GetType();
                     Logger.Error(e.Message + "\n\n" + e.StackTrace);
-
-                } finally {
-                    Monitor.Exit(processing);
-                }
+                } 
+                //finally {
+                //    Monitor.Exit(processing);
+                //}
                 Browser.Wait(1000);
             }
         }
