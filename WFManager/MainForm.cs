@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,10 +20,11 @@ namespace WFManager {
             RegistrySetup.SetBrowserFeatureControl();
             InitializeComponent();
             Browser.Initialize(webBrowser);
-            Product.Deserialize();
+            Store.Deserialize();
             graphButton.Enabled = true;
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
+            versionLabel.Text = Utility.AssemblyDate.ToString();
         }
 
         private void startButton_Click(object sender, EventArgs e) {
@@ -31,8 +33,8 @@ namespace WFManager {
             Logger.Label("Hello");
             WF.LogIn("owczy_farmer", "farmernia", 10);
             
-            if (!Product.Vegetables.Any()) 
-                Product.UpdateProductsInfo();
+            if (!Store.Vegetables.Any())
+                Store.UpdateProductsInfo();
 
             stopButton.Enabled = true;
 

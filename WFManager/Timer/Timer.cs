@@ -27,7 +27,7 @@ namespace WFManager {
             while (!stopped) {
                 try {
                     //Monitor.Enter(processing);
-
+                    
                     if (events.Find(ev => ev.type == EventType.CROP) == null) 
                         events.Add(new Event(DateTime.Now, EventType.CROP));
 
@@ -59,7 +59,7 @@ namespace WFManager {
                                     if (DateTime.Now.Hour >= 22)
                                         pId = V.Zboże;
                                     Farm.SowFields(pId);
-                                    ev.date = DateTime.Now + TimeSpan.FromSeconds(Product.Vegetables[pId].GrowthTime.TotalSeconds /* 0.95*/);
+                                    ev.date = DateTime.Now + TimeSpan.FromSeconds(Store.Vegetables[pId].GrowthTime.TotalSeconds /* 0.95*/);
                                     break;
 
                                 case EventType.FEED_CHICKENS:
@@ -71,6 +71,8 @@ namespace WFManager {
                             SerializeEvents();
                         }
                     }
+
+                    WF.CheckMail();
                 } 
                 catch (ObjectDisposedException e) {
                     stopped = true;

@@ -84,10 +84,7 @@
     <Compile Include="Places\ElFarmado.cs" />
     <Compile Include="Places\ElFishado.cs" />
     <Compile Include="Places\Farm.cs" />
-    <Compile Include="ProductNS\D.cs" />
-    <Compile Include="ProductNS\Diary.cs" />
-    <Compile Include="ProductNS\V.cs" />
-    <Compile Include="ProductNS\Vegetable.cs" />
+    <Compile Include="Places\Store.cs" />
     <Compile Include="Timer\Event.cs" />
     <Compile Include="Timer\EventType.cs" />
     <Compile Include="MainForm.cs">
@@ -96,8 +93,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductNS\PriceRecord.cs" />
-    <Compile Include="ProductNS\Product.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrySetup.cs" />
@@ -120,7 +115,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Fakes Include="Fakes\System.Net.Http.fakes" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -133,6 +127,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WFdll\WFdll.csproj">
+      <Project>{bbc12379-3716-4afd-972e-60b0c128bd32}</Project>
+      <Name>WFdll</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -63,8 +63,10 @@ namespace WFManager.Places {
 
                 foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
                     HtmlElement square = outerSquare.Children[0];
-                    if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/0.gif"))
+                    if (canBeSown(square)) {
                         square.InvokeMember("click");
+                        Browser.Wait(100);
+                    }
                 }
                 waitForAllSquaresToLoad();
 
@@ -198,9 +200,9 @@ namespace WFManager.Places {
             travelToFarm();
 
             // Calculate feeding strategy
-            var egg = Product.Get(9);
-            var grain = Product.Vegetables[1];
-            var corn = Product.Vegetables[2];
+            var egg = Store.Get(9);
+            var grain = Store.Vegetables[1];
+            var corn = Store.Vegetables[2];
 
             var cheaperFood = (2 * grain.LowestPriceNow < corn.LowestPriceNow) ? grain : corn;
             bool feedFull = true;
@@ -225,7 +227,7 @@ namespace WFManager.Places {
                 if (feedline.Children.Count > 0 && !Browser.GetChildrenByClass(feedline, "transparent").Any()) {
                     // Feed Chickens
                     giveFood(cheaperFood.ID, feedFull);
-                    Browser.WaitForId("production_info_time");
+                    Browser.WaitForId("production_info_time", 5000);
                 }
 
                 // Check production time

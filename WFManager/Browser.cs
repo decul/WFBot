@@ -64,7 +64,7 @@ namespace WFManager {
 
 
 
-        private static bool isVisible(HtmlElement element) {
+        public static bool isVisible(HtmlElement element) {
             for (var el = element; true; el = el.Parent) {
                 if (el == null)
                     throw new NullReferenceException("Element's visibility cannot be evaluated, one of his ancestors is null");
@@ -75,7 +75,7 @@ namespace WFManager {
             }
         }
 
-        private static bool isAnyVisible(List<HtmlElement> elements) {
+        public static bool isAnyVisible(List<HtmlElement> elements) {
             foreach (HtmlElement element in elements) {
                 if (isVisible(element))
                     return true;

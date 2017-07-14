@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using WFManager.Places;
 using WFManager.ProductNS;
 
 namespace WFManager {
@@ -28,25 +29,25 @@ namespace WFManager {
 
 
         private void VegetableButton_Click(object sender, EventArgs e) {
-            plotGraph(Product.AvailableVegetables, (product, record) => {
+            plotGraph(Store.AvailableVegetables, (product, record) => {
                 return product.HourlyProfitPerField(record.price);
             });
         }
 
         private void DiaryButton_Click(object sender, EventArgs e) {
-            plotGraph(Product.AvailableDiaries, (product, record) => {
+            plotGraph(Store.AvailableDiaries, (product, record) => {
                 return product.HourlyProfitPerAnimal(record.price);
             });
         }
 
         private void ExcessButton_Click(object sender, EventArgs e) {
-            plotGraph(Product.AvailableVegetables, (product, record) => {
+            plotGraph(Store.AvailableVegetables, (product, record) => {
                 return product.PercentageMarketPriceExcess(record.price);
             });
         }
 
         private void DiaryPriceButton1_Click(object sender, EventArgs e) {
-            plotGraph(Product.AvailableDiaries, (product, record) => {
+            plotGraph(Store.AvailableDiaries, (product, record) => {
                 return record.price;
             });
         }

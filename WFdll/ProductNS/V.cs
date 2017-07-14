@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WFManager.ProductNS {
-    class V {
+    public class V {
         public const int Arbuzy = 128;
         public const int Bazylia = 114;
         public const int Bodziszki = 108;

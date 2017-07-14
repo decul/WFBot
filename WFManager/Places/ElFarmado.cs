@@ -50,7 +50,7 @@ namespace WFManager.Places {
                     Browser.WaitForId("marktoffers_rows");
 
                     // Save price
-                    Product.Get(productId).AddPrice(getPriceOfFirstRow());
+                    Store.Get(productId).AddPrice(getPriceOfFirstRow());
 
                     // Go back to All products
                     Browser.Click("market_navi5");
@@ -58,7 +58,7 @@ namespace WFManager.Places {
                 }
             }
 
-            Product.Serialize();
+            Store.Serialize();
 
             // Close market
             Browser.GetChildrenByClass(Browser.GetElementById("market"), "close").First().InvokeMember("click");

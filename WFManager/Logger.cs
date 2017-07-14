@@ -68,23 +68,25 @@ namespace WFManager {
             }
         }
         private static void _alert(object msg) {
-            slackAlert((string)msg, "exceptions");
+            SlackAlert((string)msg, "exceptions");
             MessageBox.Show((string)msg);
             msgLocked = false;
         }
 
-        private static void slackAlert(string msg, string channel) {
+        public static void SlackAlert(string msg, string channel) {
             const string token = "xoxp-211250702357-210491761808-211976407686-2766670d1fb232aff59e9107fbe9b612";
 
             Process cmd = new Process();
             cmd.StartInfo.FileName = "cmd.exe";
             cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.RedirectStandardError = true;
             cmd.StartInfo.CreateNoWindow = true;
             cmd.StartInfo.UseShellExecute = false;
             cmd.Start();
 
-            cmd.StandardInput.WriteLine("slackcli -t " + token + " -h " + channel + " -m \"" + msg + "\"");
+            var text = ("slackcli -t " + token + " -h " + channel + " -m \"" + msg + "\"").Replace("\n", " ");
+            cmd.StandardInput.WriteLine(text);
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             cmd.WaitForExit();
