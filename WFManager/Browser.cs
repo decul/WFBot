@@ -106,62 +106,35 @@ namespace WFManager {
 
 
         public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 60000) {
-            var start = DateTime.Now;
-            while (true) {
-                var element = Document.GetElementById(id);
-                if (element != null && isVisible(element))
-                    break;
-
-                if ((DateTime.Now - start).TotalMilliseconds > timeout)
-                    throw new Exception("Wait for ID Timeout");
-
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
-
-            Wait(postWaitTime);
+            if (!TryWaitForId(id, timeout, postWaitTime))
+                throw new Exception("Wait for ID Timeout");
         }
 
         public static bool TryWaitForId(string id, int timeout = 60000, int postWaitTime = 2000) {
-            try {
-                WaitForId(id, postWaitTime, timeout);
-                return true;
-            } catch (Exception) {
-                return false;
-            }
+            Func<bool> predicate = () => {
+                var element = Document.GetElementById(id);
+                return element != null && isVisible(element);
+            };
+            return WaitFor(predicate, postWaitTime, timeout);
         }
 
         public static void WaitForClass(string className, string tagName = null, int waitTime = 2000) {
-            var start = DateTime.Now;
-            while (true) { 
+            Func<bool> predicate = () => {
                 var elements = GetElementsByClass(className, tagName);
-                if (elements.Any() && isAnyVisible(elements))
-                    break;
-
-                if ((DateTime.Now - start).TotalMilliseconds > 60000)
-                    throw new Exception("Wait for class Timeout");
-
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
-
-            Wait(waitTime);
+                return elements.Any() && isAnyVisible(elements);
+            };
+            if (!WaitFor(predicate, waitTime))
+                throw new Exception("Wait for class Timeout");
         }
 
         public static void WaitForBus() {
-            var start = DateTime.Now;
-            Wait(500);
-            while (true) {
-                HtmlElement busBox = GetElementById("travel_box");
-                if (busBox == null || !isVisible(busBox) || !busBox.GetAttribute("className").Any())
-                    break;
-
-                if ((DateTime.Now - start).TotalMilliseconds > 60000)
-                    throw new Exception("Wait for bus Timeout");
-
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
+            Wait(1000);
+            Func<bool> predicate = () => {
+                var busBox = GetElementById("travel_box");
+                return busBox == null || !isVisible(busBox) || !busBox.GetAttribute("className").Any();
+            };
+            if (!WaitFor(predicate, 0))
+                throw new Exception("Wait for bus Timeout");
         }
 
         public static void WaitForDocument() {
@@ -184,6 +157,22 @@ namespace WFManager {
         public static void Wait(long waitTime) {
             var start = DateTime.Now;
             while ((DateTime.Now - start).TotalMilliseconds < waitTime) {
+                Application.DoEvents();
+                Thread.Sleep(10);
+            }
+        }
+
+        public static bool WaitFor(Func<bool> predicate, long postWaitTime = 1000, long timeout = 60000) {
+            var start = DateTime.Now;
+            while (true) {
+                if (predicate()) {
+                    Wait(postWaitTime);
+                    return true;
+                }
+
+                if ((DateTime.Now - start).TotalMilliseconds > timeout)
+                    return false;
+
                 Application.DoEvents();
                 Thread.Sleep(10);
             }

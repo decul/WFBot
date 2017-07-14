@@ -65,7 +65,7 @@ namespace WFManager.Places {
                     HtmlElement square = outerSquare.Children[0];
                     if (canBeSown(square)) {
                         square.InvokeMember("click");
-                        Browser.Wait(100);
+                        Browser.WaitFor(() => !canBeSown(square), 0);
                     }
                 }
                 waitForAllSquaresToLoad();
@@ -144,10 +144,10 @@ namespace WFManager.Places {
             return true;
         }
 
-        private static bool isLoading(HtmlElement square) {
-            assertInnerSquare(square);
-            return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/loading.gif");
-        }
+        //private static bool isLoading(HtmlElement square) {
+        //    assertInnerSquare(square);
+        //    return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/loading.gif");
+        //}
 
         private static bool isWatered(HtmlElement square) {
             assertInnerSquare(square);
@@ -155,35 +155,16 @@ namespace WFManager.Places {
         }
 
         private static void waitForAllSquaresToLoad(int waitTime = 1000) {
-            var start = DateTime.Now;
-            while (true) {
-                if (!Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => isLoading(s) || canBeSown(s)).Any())
-                    break;
-
-                if ((DateTime.Now - start).TotalMilliseconds > 60000)
-                    throw new Exception("Wait for all squares to load Timeout");
-
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
-
-            Browser.Wait(waitTime);
+            if (!Browser.WaitFor(() => { return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => canBeSown(s)).Any(); }, waitTime))
+                throw new Exception("Wait for all squares to load Timeout");
         }
 
         private static void waitForWatering(int waitTime = 1000) {
-            var start = DateTime.Now;
-            while (true) {
-                if (!Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => isHarvestable(s) && !isWatered(s)).Any())
-                    break;
-                
-                if ((DateTime.Now - start).TotalMilliseconds > 60000)
-                    throw new Exception("Wait for watering Timeout");
-
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
-
-            Browser.Wait(waitTime);
+            Func<bool> predicate = () => {
+                return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => isHarvestable(s) && !isWatered(s)).Any();
+            };
+            if (!Browser.WaitFor(predicate, waitTime))
+                throw new Exception("Wait for watering Timeout");
         }
 
         private static HtmlElement assertInnerSquare(HtmlElement square) {

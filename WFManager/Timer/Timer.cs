@@ -24,22 +24,25 @@ namespace WFManager {
         static public void Run() {
             stopped = false;
 
+            if (events.Find(ev => ev.type == EventType.CROP) == null) 
+                events.Add(new Event(DateTime.Now, EventType.CROP));
+
+            if (events.Find(ev => ev.type == EventType.FEED_CHICKENS) == null)
+                events.Add(new Event(DateTime.Now, EventType.FEED_CHICKENS));
+
+            if (events.Find(ev => ev.type == EventType.CHECK_MAIL) == null) 
+                events.Add(new Event(DateTime.Now, EventType.CHECK_MAIL));
+
+            if (events.Find(ev => ev.type == EventType.PRICES_UPDATE) == null)
+                events.Add(new Event(DateTime.Now, EventType.PRICES_UPDATE));
+
             while (!stopped) {
-                try {
-                    //Monitor.Enter(processing);
-                    
-                    if (events.Find(ev => ev.type == EventType.CROP) == null) 
-                        events.Add(new Event(DateTime.Now, EventType.CROP));
+                //Monitor.Enter(processing);
 
-                    if (events.Find(ev => ev.type == EventType.FEED_CHICKENS) == null)
-                        events.Add(new Event(DateTime.Now, EventType.FEED_CHICKENS));
-
-                    if (events.Find(ev => ev.type == EventType.PRICES_UPDATE) == null) 
-                        events.Add(new Event(DateTime.Now, EventType.PRICES_UPDATE));
-
-                    foreach (var ev in events) {
+                foreach (var ev in events) {
+                    try {
                         if (ev.date <= DateTime.Now) {
-                            switch(ev.type) {
+                            switch (ev.type) {
                                 case EventType.PRICES_UPDATE:
                                     WF.LogIn();
                                     ElFarmado.UpdatePrices();
@@ -66,24 +69,24 @@ namespace WFManager {
                                     WF.LogIn();
                                     ev.date = DateTime.Now + Farm.FeedChickens();
                                     break;
-                            }
 
+                                case EventType.CHECK_MAIL:
+                                    WF.CheckMail();
+                                    ev.date = DateTime.Now + TimeSpan.FromMinutes(1);
+                                    break;
+                            }
                             SerializeEvents();
                         }
+                    } catch (ObjectDisposedException e) {
+                        stopped = true;
+                    } catch (Exception e) {
+                        var type = e.GetType();
+                        Logger.Error(e.Message + "\n\n" + e.StackTrace);
                     }
-
-                    WF.CheckMail();
-                } 
-                catch (ObjectDisposedException e) {
-                    stopped = true;
-                } 
-                catch (Exception e) {
-                    var type = e.GetType();
-                    Logger.Error(e.Message + "\n\n" + e.StackTrace);
-                } 
-                //finally {
-                //    Monitor.Exit(processing);
-                //}
+                    //finally {
+                    //    Monitor.Exit(processing);
+                    //}
+                }
                 Browser.Wait(1000);
             }
         }
