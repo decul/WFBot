@@ -78,7 +78,7 @@ namespace WFManager {
 
                 while (true) {
                     // Click last unread message
-                    var subject = Browser.GetElementsByClass("messages_list_unread").LastOrDefault();
+                    var subject = Browser.GetElementsByClass("messages_list_unread").Where(e => e.GetAttribute("className").Split(' ').Contains("link")).LastOrDefault();
                     if (subject == null)
                         break;
                     subject.InvokeMember("click");
