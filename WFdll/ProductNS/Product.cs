@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace WFManager.ProductNS {
+namespace WFStats.ProductNS {
 
     [Serializable]
     public class Product {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFManager {
+namespace WFStats {
     class RegistrySetup {
         public static void SetBrowserFeatureControl() {
             // http://msdn.microsoft.com/en-us/library/ee330720(v=vs.85).aspx

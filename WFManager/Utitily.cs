@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace WFManager {
+namespace WFStats {
     class Utility {
         public static TimeSpan ParseTimeSpan(string timeString) {
             var time = Regex.Replace(timeString, "[^0-9:]", "").Split(':');

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WFManager {
+namespace WFStats {
     public static class Browser {
 
         public static WebBrowser b;

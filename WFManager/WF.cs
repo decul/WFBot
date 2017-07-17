@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFManager {
+namespace WFStats {
     public static class WF {
         
         public const string storagePath = ".\\data";

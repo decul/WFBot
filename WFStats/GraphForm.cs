@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using WFStats.Places;
 using WFStats.ProductNS;
 
 namespace WFStats {
@@ -29,27 +28,30 @@ namespace WFStats {
 
 
         private void VegetableButton_Click(object sender, EventArgs e) {
-            plotGraph(Store.AvailableVegetables, (product, record) => {
+            //plotGraph(Store.AvailableVegetables, (product, record) => {
+            //    return product.HourlyProfitPerField(record.price);
+            //});
+            plotGraph(HttpClient.Vegetables, (product, record) => {
                 return product.HourlyProfitPerField(record.price);
             });
         }
 
         private void DiaryButton_Click(object sender, EventArgs e) {
-            plotGraph(Store.AvailableDiaries, (product, record) => {
-                return product.HourlyProfitPerAnimal(record.price);
-            });
+            //plotGraph(Store.AvailableDiaries, (product, record) => {
+            //    return product.HourlyProfitPerAnimal(record.price);
+            //});
         }
 
         private void ExcessButton_Click(object sender, EventArgs e) {
-            plotGraph(Store.AvailableVegetables, (product, record) => {
-                return product.PercentageMarketPriceExcess(record.price);
-            });
+            //plotGraph(Store.AvailableVegetables, (product, record) => {
+            //    return product.PercentageMarketPriceExcess(record.price);
+            //});
         }
 
         private void DiaryPriceButton1_Click(object sender, EventArgs e) {
-            plotGraph(Store.AvailableDiaries, (product, record) => {
-                return record.price;
-            });
+            //plotGraph(Store.AvailableDiaries, (product, record) => {
+            //    return record.price;
+            //});
         }
 
 

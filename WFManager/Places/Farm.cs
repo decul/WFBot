@@ -6,9 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFManager.ProductNS;
+using WFStats.ProductNS;
 
-namespace WFManager.Places {
+namespace WFStats.Places {
     public static class Farm {
 
         private static void travelToFarm() {

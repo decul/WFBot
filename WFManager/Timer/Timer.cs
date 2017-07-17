@@ -7,10 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using WFManager.Places;
-using WFManager.ProductNS;
+using WFStats.Places;
+using WFStats.ProductNS;
 
-namespace WFManager {
+namespace WFStats {
     static public class Timer {
         static private bool stopped = true;
         static private object processing = new object();

@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using WFManager.ProductNS;
+using WFStats.ProductNS;
 
-namespace WFManager.Places {
+namespace WFStats.Places {
     public static class Store {
 
         static public Dictionary<int, Vegetable> Vegetables = new Dictionary<int, Vegetable>();

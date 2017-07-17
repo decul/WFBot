@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFManager", "WFManager\WFMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFdll", "WFdll\WFdll.csproj", "{BBC12379-3716-4AFD-972E-60B0C128BD32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFStats", "WFStats\WFStats.csproj", "{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,14 @@ Global
 		{BBC12379-3716-4AFD-972E-60B0C128BD32}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BBC12379-3716-4AFD-972E-60B0C128BD32}.Release|x86.ActiveCfg = Release|Any CPU
 		{BBC12379-3716-4AFD-972E-60B0C128BD32}.Release|x86.Build.0 = Release|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Debug|x86.Build.0 = Debug|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Release|x86.ActiveCfg = Release|Any CPU
+		{102D08FD-365E-4930-ABD0-9FAAFD2A3DD3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

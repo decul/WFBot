@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WFManager {
+namespace WFStats {
     class Logger {
         private static StreamWriter infoLogFile;
         private static StreamWriter errorLogFile;

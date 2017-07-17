@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using WFManager.ProductNS;
+using WFStats.ProductNS;
 
-namespace WFManager.Places {
+namespace WFStats.Places {
     public class ElFarmado {
 
         static public void UpdatePrices() {

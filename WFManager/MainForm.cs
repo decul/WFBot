@@ -11,19 +11,22 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFManager.Places;
-using WFManager.ProductNS;
+using WFStats.Places;
+using WFStats.ProductNS;
 
-namespace WFManager {
+namespace WFStats {
     public partial class MainForm : Form {
         public MainForm() {
             RegistrySetup.SetBrowserFeatureControl();
             InitializeComponent();
+
             Browser.Initialize(webBrowser);
             Store.Deserialize();
-            graphButton.Enabled = true;
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
+            HttpServer.StartListenning();
+
+            graphButton.Enabled = true;
             versionLabel.Text = Utility.AssemblyDate.ToString();
         }
 

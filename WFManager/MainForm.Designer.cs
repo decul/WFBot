@@ -1,4 +1,4 @@
-﻿namespace WFManager {
+﻿namespace WFStats {
     partial class MainForm {
         /// <summary>
         /// Required designer variable.
