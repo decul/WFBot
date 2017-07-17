@@ -53,8 +53,6 @@ namespace WFStats {
         }
 
         private static UInt32 GetBrowserEmulationMode() {
-            return 9000;
-
             int browserVersion = 7;
             using (var ieKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer",
                                RegistryKeyPermissionCheck.ReadSubTree,

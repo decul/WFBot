@@ -8,6 +8,6 @@ namespace WFStats {
 
     [Serializable]
     public enum EventType {
-        PRICES_UPDATE, CROP, FEED_CHICKENS, CHECK_MAIL
+        PRICES_UPDATE, CROP, FEED_CHICKENS, CHECK_MAIL, LOTTERY
     }
 }

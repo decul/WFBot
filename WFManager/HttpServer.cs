@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using WFdll;
 using WFStats.Places;
 using WFStats.ProductNS;
 
@@ -37,15 +38,22 @@ namespace WFStats {
             HttpListenerContext context = listener.EndGetContext(result);
             HttpListenerRequest request = context.Request;
 
-            string requestedContent = request.Headers.Get("requested_resource");
-            
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("List"));
-            using (StreamWriter writer = new StreamWriter(context.Response.OutputStream))
-                serializer.Serialize(writer, Store.Vegetables.Select(p => p.Value).ToList());
-            
+            if (request.HttpMethod == "GET") {
+                switch (request.Headers.Get("requested_resource")) {
+                    case "AvailableVegetables":
+                        Serializer.Serialize(Store.AvailableVegetables, context.Response.OutputStream);
+                        break;
 
-            StreamReader reader = new StreamReader(request.InputStream);
-            string content = reader.ReadToEnd();
+                    case "AvailableDiaries":
+                        Serializer.Serialize(Store.AvailableDiaries, context.Response.OutputStream);
+                        break;
+                }
+
+                
+            }
+
+            //StreamReader reader = new StreamReader(request.InputStream);
+            //string content = reader.ReadToEnd();
 
             context.Response.Close();
             listener.BeginGetContext(Recive, listener);

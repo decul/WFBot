@@ -23,15 +23,15 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.DiaryPriceButton = new System.Windows.Forms.Button();
             this.ExcessButton = new System.Windows.Forms.Button();
             this.DiaryButton = new System.Windows.Forms.Button();
             this.VegetableButton = new System.Windows.Forms.Button();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.DiaryPriceButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -59,6 +59,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(946, 658);
             this.splitContainer1.SplitterDistance = 29;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // DiaryPriceButton
+            // 
+            this.DiaryPriceButton.Location = new System.Drawing.Point(267, 3);
+            this.DiaryPriceButton.Name = "DiaryPriceButton";
+            this.DiaryPriceButton.Size = new System.Drawing.Size(78, 23);
+            this.DiaryPriceButton.TabIndex = 3;
+            this.DiaryPriceButton.Text = "Zwierz. cena";
+            this.DiaryPriceButton.UseVisualStyleBackColor = true;
+            this.DiaryPriceButton.Click += new System.EventHandler(this.DiaryPriceButton1_Click);
             // 
             // ExcessButton
             // 
@@ -93,33 +103,27 @@
             // chart
             // 
             this.chart.BackColor = System.Drawing.Color.DimGray;
-            chartArea2.AxisX.LineColor = System.Drawing.Color.DimGray;
-            chartArea2.BackColor = System.Drawing.Color.Black;
-            chartArea2.BorderColor = System.Drawing.Color.White;
-            chartArea2.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.ScrollBar.BackColor = System.Drawing.Color.Red;
+            chartArea1.AxisX.ScrollBar.ButtonColor = System.Drawing.Color.Yellow;
+            chartArea1.AxisX.ScrollBar.LineColor = System.Drawing.Color.Blue;
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.Maroon;
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea1);
             this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.chart.Legends.Add(legend2);
+            legend1.Name = "Legend1";
+            this.chart.Legends.Add(legend1);
             this.chart.Location = new System.Drawing.Point(0, 0);
             this.chart.Name = "chart";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart.Series.Add(series1);
             this.chart.Size = new System.Drawing.Size(946, 625);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
-            // 
-            // DiaryPriceButton
-            // 
-            this.DiaryPriceButton.Location = new System.Drawing.Point(267, 3);
-            this.DiaryPriceButton.Name = "DiaryPriceButton";
-            this.DiaryPriceButton.Size = new System.Drawing.Size(78, 23);
-            this.DiaryPriceButton.TabIndex = 3;
-            this.DiaryPriceButton.Text = "Zwierz. cena";
-            this.DiaryPriceButton.UseVisualStyleBackColor = true;
-            this.DiaryPriceButton.Click += new System.EventHandler(this.DiaryPriceButton1_Click);
             // 
             // GraphForm
             // 

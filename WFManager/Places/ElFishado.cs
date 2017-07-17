@@ -12,14 +12,14 @@ namespace WFStats.Places {
             Browser.Click("mainmenue1");
             Browser.WaitForId("map_city2");
 
-            // Go to Farm
+            // Go to ElFishado
             Browser.Click("map_city2");
             Browser.WaitForBus();
             Browser.WaitForId("cityzone_2_8");
         }
 
 
-        public static void collectFreeProducts() {
+        public static void CollectFreeProducts() {
             travelToElFishado();
 
             // Go to Lotery
@@ -38,8 +38,11 @@ namespace WFStats.Places {
                 string report = string.Join(", ", Browser.GetElementsByClass("lotteryprize_info").Select(p => p.InnerText).ToList());
                 Logger.Info("Wygrano na loterii: " + report);
 
-                // Close dialog
+                // Close Dialog
                 Browser.Click("globalbox_button1");
+
+                // Close Lottery
+                Browser.GetElementById("lotteryhead").Children[0].InvokeMember("click");
             }
         }
     }

@@ -6,16 +6,30 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using WFdll;
 using WFStats.ProductNS;
 
 namespace WFStats {
     class HttpClient {
-        private const string url = "http://192.168.1.53:80/Temporary_Listen_Addresses/WFManager/";
+        private const string url = "http://192.168.1.88:80/Temporary_Listen_Addresses/WFManager/";
 
-        public static List<Vegetable> Vegetables {
+        public static List<Vegetable> AvailableVegetables {
             get {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("List"));
-                return( (List<Vegetable>) serializer.Deserialize(RequestResource("Vegetables"))).Where(v => v.PriceHistory.Any()).ToList();
+                try {
+                    return Serializer.Deserialize<Vegetable>(RequestResource("AvailableVegetables"));
+                } catch (Exception) {
+                    return new List<Vegetable>();
+                }
+            }
+        }
+
+        public static List<Diary> AvailableDiaries {
+            get {
+                try {
+                    return Serializer.Deserialize<Diary>(RequestResource("AvailableDiaries"));
+                } catch (Exception) {
+                    return new List<Diary>();
+                }
             }
         }
 
@@ -24,7 +38,8 @@ namespace WFStats {
             request.Method = "GET";
             request.KeepAlive = true;
             request.Credentials = CredentialCache.DefaultCredentials;
-            
+            request.Headers.Set("requested_resource", resourceName);
+
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             
             if (response.StatusCode != HttpStatusCode.OK)

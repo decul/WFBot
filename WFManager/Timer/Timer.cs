@@ -13,7 +13,6 @@ using WFStats.ProductNS;
 namespace WFStats {
     static public class Timer {
         static private bool stopped = true;
-        static private object processing = new object();
 
         static private List<Event> events = new List<Event>();
         
@@ -36,9 +35,11 @@ namespace WFStats {
             if (events.Find(ev => ev.type == EventType.PRICES_UPDATE) == null)
                 events.Add(new Event(DateTime.Now, EventType.PRICES_UPDATE));
 
-            while (!stopped) {
-                //Monitor.Enter(processing);
+            if (events.Find(ev => ev.type == EventType.LOTTERY) == null)
+                events.Add(new Event(DateTime.Now, EventType.LOTTERY));
 
+
+            while (!stopped) {
                 foreach (var ev in events) {
                     try {
                         if (ev.date <= DateTime.Now) {
@@ -74,6 +75,11 @@ namespace WFStats {
                                     WF.CheckMail();
                                     ev.date = DateTime.Now + TimeSpan.FromMinutes(1);
                                     break;
+
+                                case EventType.LOTTERY:
+                                    ElFishado.CollectFreeProducts();
+                                    ev.date = ev.date.AddDays(1);
+                                    break;
                             }
                             SerializeEvents();
                         }
@@ -83,9 +89,6 @@ namespace WFStats {
                         var type = e.GetType();
                         Logger.Error(e.Message + "\n\n" + e.StackTrace);
                     }
-                    //finally {
-                    //    Monitor.Exit(processing);
-                    //}
                 }
                 Browser.Wait(1000);
             }

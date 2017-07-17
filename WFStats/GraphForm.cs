@@ -22,36 +22,48 @@ namespace WFStats {
             chart.ChartAreas[0].CursorY.IsUserEnabled = true;
             chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
 
+            chart.BackColor = Color.FromArgb(31, 31, 31);
+            chart.ChartAreas[0].AxisY.LabelStyle.ForeColor = Color.White;
+
+            chart.ChartAreas[0].AxisY.ScrollBar.ButtonColor =
+            chart.ChartAreas[0].AxisX.ScrollBar.ButtonColor = Color.FromArgb(127, 127, 127);
+
+            chart.ChartAreas[0].AxisX.ScrollBar.BackColor =
+            chart.ChartAreas[0].AxisY.ScrollBar.BackColor = Color.FromArgb(63, 63, 63);
+
+            chart.ChartAreas[0].AxisX.ScrollBar.LineColor =
+            chart.ChartAreas[0].AxisX.ScrollBar.LineColor = Color.FromArgb(15, 15, 15);
+
+            chart.Legends[0].BackColor = Color.Black;
+            chart.Legends[0].ForeColor = Color.White;
+
             VegetableButton_Click(new object(), new EventArgs());
         }
         
 
 
         private void VegetableButton_Click(object sender, EventArgs e) {
-            //plotGraph(Store.AvailableVegetables, (product, record) => {
-            //    return product.HourlyProfitPerField(record.price);
-            //});
-            plotGraph(HttpClient.Vegetables, (product, record) => {
+            plotGraph(HttpClient.AvailableVegetables, (product, record) => {
                 return product.HourlyProfitPerField(record.price);
             });
         }
 
         private void DiaryButton_Click(object sender, EventArgs e) {
-            //plotGraph(Store.AvailableDiaries, (product, record) => {
-            //    return product.HourlyProfitPerAnimal(record.price);
-            //});
+            plotGraph(HttpClient.AvailableDiaries, (product, record) => {
+                return product.HourlyProfitPerAnimal(record.price);
+            });
         }
 
         private void ExcessButton_Click(object sender, EventArgs e) {
-            //plotGraph(Store.AvailableVegetables, (product, record) => {
-            //    return product.PercentageMarketPriceExcess(record.price);
-            //});
+            plotGraph(HttpClient.AvailableVegetables, (product, record) => {
+                return product.PercentageMarketPriceExcess(record.price);
+            });
         }
 
         private void DiaryPriceButton1_Click(object sender, EventArgs e) {
-            //plotGraph(Store.AvailableDiaries, (product, record) => {
-            //    return record.price;
-            //});
+            plotGraph(HttpClient.AvailableDiaries, (product, record) => {
+                return record.price;
+            });
         }
 
 
@@ -75,6 +87,8 @@ namespace WFStats {
             series = series.OrderByDescending(s => s.Points.Last().YValues.Last()).ToList();
             foreach (var seria in series)
                 chart.Series.Add(seria);
+
+            chart.ChartAreas[0].RecalculateAxesScale();
         }
     }
 }
