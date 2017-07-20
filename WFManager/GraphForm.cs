@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using WFManager;
-using WFManager.ProductNS;
 
 namespace WFManager {
     public partial class GraphForm : Form {

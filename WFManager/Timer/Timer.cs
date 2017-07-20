@@ -7,8 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using WFManager;
-using WFManager.ProductNS;
 
 namespace WFManager {
     static public class Timer {
