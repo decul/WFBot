@@ -6,9 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFStats.ProductNS;
 
-namespace WFStats.Places {
+namespace WFManager {
     public static class Farm {
 
         private static void travelToFarm() {
@@ -61,25 +60,23 @@ namespace WFStats.Places {
                 Browser.Click("rackitem" + productId);
                 Browser.Wait(1000);
 
-                for (int s = 1; s <= 120; s++) {
-                    var square = Browser.GetElementById("field" + s).Children[0];
-                    if (canBeSown(square)) {
-                        square.InvokeMember("click");
-                        Browser.WaitFor(() => !canBeSown(Browser.GetElementById("field" + s).Children[0]), 0);
-                    }
-                }
-
-                //foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
-                //    HtmlElement square = outerSquare.Children[0];
+                //for (int s = 1; s <= 120; s++) {
+                //    var square = Browser.GetElementById("field" + s).Children[0];
                 //    if (canBeSown(square)) {
                 //        square.InvokeMember("click");
-                //        Browser.WaitFor(() => !canBeSown(square), 0);
+                //        Browser.WaitFor(() => !canBeSown(Browser.GetElementById("field" + s).Children[0]), 0);
                 //    }
                 //}
-                //waitForAllSquaresToLoad();
 
-                // Close field
-                Browser.Click("gardencancel");
+                foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
+                    HtmlElement square = outerSquare.Children[0];
+                    if (canBeSown(square)) 
+                        square.InvokeMember("click");
+                }
+                waitForAllSquaresToLoad();
+
+            // Close field
+            Browser.Click("gardencancel");
                 Browser.Wait(1000);
             }
             

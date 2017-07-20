@@ -11,17 +11,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFStats.Places;
-using WFStats.ProductNS;
 
-namespace WFStats {
+namespace WFManager {
     public partial class MainForm : Form {
         public MainForm() {
             RegistrySetup.SetBrowserFeatureControl();
             InitializeComponent();
 
             Browser.Initialize(webBrowser);
-            Store.Deserialize();
+            Store.XmlDeserialize();
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
             HttpServer.StartListenning();

@@ -1,4 +1,4 @@
-﻿namespace WFStats {
+﻿namespace WFManager {
     partial class GraphForm {
         /// <summary>
         /// Required designer variable.

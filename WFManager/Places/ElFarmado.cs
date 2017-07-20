@@ -4,10 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using WFStats.ProductNS;
 
-namespace WFStats.Places {
+namespace WFManager {
     public class ElFarmado {
 
         static public void UpdatePrices() {
@@ -58,7 +56,7 @@ namespace WFStats.Places {
                 }
             }
 
-            Store.Serialize();
+            Store.XmlSerialize();
 
             // Close market
             Browser.GetChildrenByClass(Browser.GetElementById("market"), "close").First().InvokeMember("click");

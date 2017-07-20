@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFStats.Places {
+namespace WFManager {
     class ElFishado {
 
         private static void travelToElFishado() {

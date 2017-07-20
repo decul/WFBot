@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WFStats.Properties {
+namespace WFManager.Properties {
 
 
     /// <summary>

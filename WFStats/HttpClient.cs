@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using WFdll;
-using WFStats.ProductNS;
 
-namespace WFStats {
+namespace WFManager {
     class HttpClient {
         private const string url = "http://192.168.1.88:80/Temporary_Listen_Addresses/WFManager/";
 

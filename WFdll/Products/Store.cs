@@ -5,12 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Serialization;
-using WFStats.ProductNS;
 
-namespace WFStats.Places {
+namespace WFManager {
     public static class Store {
 
         static public Dictionary<int, Vegetable> Vegetables = new Dictionary<int, Vegetable>();
@@ -73,7 +70,7 @@ namespace WFStats.Places {
             updateVegetablesInfo();
             updateProductsInfo("newhelp_menue_item_products_e", "kp9");
 
-            Serialize();
+            XmlSerialize();
 
             // Close Help
             Browser.GetChildrenByClass(Browser.GetElementById("newhelp"), "mini_close")[0].InvokeMember("click");
@@ -157,7 +154,7 @@ namespace WFStats.Places {
 
 
 
-        static public void Serialize() {
+        static public void XmlSerialize() {
             if (!Directory.Exists(WF.storagePath))
                 Directory.CreateDirectory(WF.storagePath);
 
@@ -170,7 +167,7 @@ namespace WFStats.Places {
                 serializer.Serialize(writer, Diaries.Select(p => p.Value).ToList());
         }
 
-        static public void Deserialize() {
+        static public void XmlDeserialize() {
             XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("Vegetables"));
             try {
                 using (FileStream file = new FileStream(WF.storagePath + "\\Vegetables.xml", FileMode.Open))

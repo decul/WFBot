@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using WFStats.ProductNS;
+using WFManager;
 
-namespace WFdll {
+namespace WFManager {
     public static class Serializer {
         public static void Serialize <T> (List<T> list, Stream stream) {
             XmlSerializer serializer = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("List"));

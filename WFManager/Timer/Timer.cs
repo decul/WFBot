@@ -7,10 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using WFStats.Places;
-using WFStats.ProductNS;
+using WFManager;
+using WFManager.ProductNS;
 
-namespace WFStats {
+namespace WFManager {
     static public class Timer {
         static private bool stopped = true;
 
@@ -55,13 +55,13 @@ namespace WFStats {
 
                                 case EventType.CROP:
                                     WF.LogIn();
-                                    int pId = V.Truskawki;
-                                    if (DateTime.Now.Hour >= 12)
-                                        pId = V.Rzepak;
-                                    if (DateTime.Now.Hour >= 19)
-                                        pId = V.Marchewki;
-                                    if (DateTime.Now.Hour >= 22)
-                                        pId = V.Zboże;
+                                    int pId = V.Kalafiory;
+                                    //if (DateTime.Now.Hour >= 12)
+                                    //    pId = V.Rzepak;
+                                    //if (DateTime.Now.Hour >= 19)
+                                    //    pId = V.Marchewki;
+                                    //if (DateTime.Now.Hour >= 22)
+                                    //    pId = V.Zboże;
                                     Farm.SowFields(pId);
                                     ev.date = DateTime.Now + TimeSpan.FromSeconds(Store.Vegetables[pId].GrowthTime.TotalSeconds /* 0.95*/);
                                     break;

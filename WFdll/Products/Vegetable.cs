@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFStats.ProductNS {
+namespace WFManager {
     public class Vegetable : Product {
         public int Size;
         public double BasePrice;

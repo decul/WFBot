@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFStats.ProductNS {
+namespace WFManager {
     public class V {
         public const int Arbuzy = 128;
         public const int Bazylia = 114;

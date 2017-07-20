@@ -8,9 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using WFStats.ProductNS;
 
-namespace WFStats {
+namespace WFManager {
     public partial class GraphForm : Form {
         public GraphForm() {
             InitializeComponent();
