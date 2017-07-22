@@ -89,5 +89,48 @@ namespace WFManager {
 
             chart.ChartAreas[0].RecalculateAxesScale();
         }
+
+
+
+
+
+
+
+        private void VegButton_Click(object sender, EventArgs e) {
+            List<Vegetable> vegs = HttpClient.AvailableVegetables;
+
+            GridView.Rows.Clear();
+            if (vegs.Any())
+                GridView.Rows.Add(vegs.Count);
+            for (int i = 0; i < vegs.Count; i++) {
+                GridView.Rows[i].Cells[NameColumn.Index].Value = vegs[i].Name;
+                GridView.Rows[i].Cells[IncomeColumn.Index].Value = vegs[i].HourlyProfitPerField(vegs[i].BasePrice) * 24;
+                GridView.Rows[i].Cells[BonusColumn.Index].Value = vegs[i].HourlyBonusPerField * 24;
+                GridView.Rows[i].Cells[TimeColumn.Index].Value = vegs[i].GrowthTime.TotalHours;
+            }
+
+            double minIncome = GridView.Rows.Cast<DataGridViewRow>().Min(r => (double)r.Cells[IncomeColumn.Index].Value);
+            double maxIncome = GridView.Rows.Cast<DataGridViewRow>().Max(r => (double)r.Cells[IncomeColumn.Index].Value);
+            double minBonus = GridView.Rows.Cast<DataGridViewRow>().Min(r => (double)r.Cells[BonusColumn.Index].Value);
+            double maxBonus = GridView.Rows.Cast<DataGridViewRow>().Max(r => (double)r.Cells[BonusColumn.Index].Value);
+            double minTime = GridView.Rows.Cast<DataGridViewRow>().Min(r => (double)r.Cells[TimeColumn.Index].Value);
+            double maxTime = GridView.Rows.Cast<DataGridViewRow>().Max(r => (double)r.Cells[TimeColumn.Index].Value);
+
+            for (int i = 0; i < vegs.Count; i++) {
+                double income = (double)GridView.Rows[i].Cells[IncomeColumn.Index].Value;
+                GridView.Rows[i].Cells[IncomeColumn.Index].Style.BackColor = ColorScale.getColor(income, minIncome, maxIncome);
+                double bonus = (double)GridView.Rows[i].Cells[BonusColumn.Index].Value;
+                GridView.Rows[i].Cells[BonusColumn.Index].Style.BackColor = ColorScale.getColor(bonus, minBonus, maxBonus);
+                double time = (double)GridView.Rows[i].Cells[TimeColumn.Index].Value;
+                GridView.Rows[i].Cells[TimeColumn.Index].Style.BackColor = ColorScale.getColor(time, minTime, maxTime);
+            }
+        }
+
+
+
+
+        private void GridView_SelectionChanged(object sender, EventArgs e) {
+            GridView.ClearSelection();
+        }
     }
 }

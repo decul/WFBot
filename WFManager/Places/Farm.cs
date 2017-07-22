@@ -68,12 +68,29 @@ namespace WFManager {
                 //    }
                 //}
 
-                foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
-                    HtmlElement square = outerSquare.Children[0];
-                    if (canBeSown(square)) 
-                        square.InvokeMember("click");
+                var veg = Store.Vegetables[productId];
+
+                for (int attempt = 0; attempt < 3; attempt++) {
+                    for (int col = 0; col < 12; col += (veg.Size > 1 ? 2 : 1)) {
+                        for (int row = 0; row < 10; row += (veg.Size > 2 ? 2 : 1)) {
+                            int index = row * 12 + col + 1;
+                            HtmlElement square = Browser.GetElementById("f" + index);
+                            if (canBeSown(square))
+                                square.InvokeMember("click");
+                        }
+                    }
+                    if (waitForAllSquaresToLoad())
+                        break;
+                    if (attempt > 1)
+                        Logger.Error("Field has not been sown after 3 attempts");
                 }
-                waitForAllSquaresToLoad();
+
+                //foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
+                //    HtmlElement square = outerSquare.Children[0];
+                //    if (canBeSown(square)) 
+                //        square.InvokeMember("click");
+                //}
+                //waitForAllSquaresToLoad();
 
             // Close field
             Browser.Click("gardencancel");
@@ -159,9 +176,11 @@ namespace WFManager {
             return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/garten/gegossen.gif");
         }
 
-        private static void waitForAllSquaresToLoad(int waitTime = 1000) {
-            if (!Browser.WaitFor(() => { return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => canBeSown(s)).Any(); }, waitTime))
-                throw new Exception("Wait for all squares to load Timeout");
+        private static bool waitForAllSquaresToLoad(int postWaitTime = 1000) {
+            Func<bool> predicate = () => {
+                return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => canBeSown(s)).Any();
+            };
+            return Browser.WaitFor(predicate, postWaitTime, 12000);
         }
 
         private static void waitForWatering(int waitTime = 1000) {

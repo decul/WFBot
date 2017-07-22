@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorScale.cs" />
     <Compile Include="GraphForm.cs">
       <SubType>Form</SubType>
     </Compile>

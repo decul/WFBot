@@ -107,7 +107,7 @@ namespace WFManager {
 
         public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 60000) {
             if (!TryWaitForId(id, timeout, postWaitTime))
-                throw new Exception("Wait for ID Timeout");
+                throw new Exception("Wait for ID Timeout (" + id + ")");
         }
 
         public static bool TryWaitForId(string id, int timeout = 60000, int postWaitTime = 2000) {
@@ -124,7 +124,7 @@ namespace WFManager {
                 return elements.Any() && isAnyVisible(elements);
             };
             if (!WaitFor(predicate, waitTime))
-                throw new Exception("Wait for class Timeout");
+                throw new Exception("Wait for class Timeout (" + className + ")");
         }
 
         public static void WaitForBus() {
