@@ -56,7 +56,7 @@ namespace WFManager {
                 }
             }
 
-            Store.XmlSerialize();
+            Store.XmlSerialize(WF.storagePath);
 
             // Close market
             Browser.GetChildrenByClass(Browser.GetElementById("market"), "close").First().InvokeMember("click");

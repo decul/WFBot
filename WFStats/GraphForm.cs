@@ -36,31 +36,33 @@ namespace WFManager {
             chart.Legends[0].BackColor = Color.Black;
             chart.Legends[0].ForeColor = Color.White;
 
+            HttpClient.UpdateStore();
+
             VegetableButton_Click(new object(), new EventArgs());
         }
         
 
 
         private void VegetableButton_Click(object sender, EventArgs e) {
-            plotGraph(HttpClient.AvailableVegetables, (product, record) => {
+            plotGraph(Store.AvailableVegetables, (product, record) => {
                 return product.HourlyProfitPerField(record.price);
             });
         }
 
         private void DiaryButton_Click(object sender, EventArgs e) {
-            plotGraph(HttpClient.AvailableDiaries, (product, record) => {
+            plotGraph(Store.AvailableDiaries, (product, record) => {
                 return product.HourlyProfitPerAnimal(record.price);
             });
         }
 
         private void ExcessButton_Click(object sender, EventArgs e) {
-            plotGraph(HttpClient.AvailableVegetables, (product, record) => {
+            plotGraph(Store.AvailableVegetables, (product, record) => {
                 return product.PercentageMarketPriceExcess(record.price);
             });
         }
 
         private void DiaryPriceButton1_Click(object sender, EventArgs e) {
-            plotGraph(HttpClient.AvailableDiaries, (product, record) => {
+            plotGraph(Store.AvailableDiaries, (product, record) => {
                 return record.price;
             });
         }
@@ -97,7 +99,7 @@ namespace WFManager {
 
 
         private void VegButton_Click(object sender, EventArgs e) {
-            List<Vegetable> vegs = HttpClient.AvailableVegetables;
+            List<Vegetable> vegs = Store.AvailableVegetables;
 
             GridView.Rows.Clear();
             if (vegs.Any())

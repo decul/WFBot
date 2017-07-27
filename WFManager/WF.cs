@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace WFManager {
     public static class WF {
@@ -94,5 +97,100 @@ namespace WFManager {
                 Browser.Wait(1000);
             }
         }
+
+
+
+        static public void UpdateProductsInfo() {
+            // Go to Help
+            Browser.Click("mainmenue5");
+            Browser.WaitForId("newhelp_menue_item_products_v");
+
+            updateVegetablesInfo();
+            updateProductsInfo("newhelp_menue_item_products_e", "kp9");
+
+            Store.XmlSerialize(WF.storagePath);
+
+            // Close Help
+            Browser.GetChildrenByClass(Browser.GetElementById("newhelp"), "mini_close")[0].InvokeMember("click");
+        }
+        
+        static private void updateVegetablesInfo() {
+            // Go to Vegetables Products (must be in help first)
+            Browser.Click("newhelp_menue_item_products_v");
+            Browser.WaitForClass("kp17", "div");
+
+            var content = Browser.GetElementById("newhelp_content");
+            var rows = Browser.getOffspringByClass(content, "newhelp_line", "td");
+            foreach (HtmlElement row in rows) {
+                try {
+                    Vegetable pinfo = new Vegetable();
+                    pinfo.ID = int.Parse(row.Children[0].Children[0].GetAttribute("className")
+                                  .Split(new string[] { "kp" }, StringSplitOptions.None)[1].Split(' ')[0]);
+
+                    if (Store.Vegetables.ContainsKey(pinfo.ID))
+                        pinfo = Store.Vegetables[pinfo.ID];
+                    else
+                        Store.Vegetables.Add(pinfo.ID, pinfo);
+
+                    pinfo.Name = row.Children[0].Children[1].InnerText.Trim();
+
+                    var time = Regex.Replace(row.Children[1].InnerText, "[^0-9:]", "").Split(':');
+                    pinfo.GrowthTime = new TimeSpan(int.Parse(time[0]), int.Parse(time[1]), int.Parse(time[2]));
+
+                    pinfo.HarvestFromIndividual = int.Parse(row.Children[2].InnerText);
+
+                    var sizeStr = row.Children[3].InnerText.Trim();
+                    pinfo.Size = (sizeStr == "1x1" ? 1 : (sizeStr == "2x2" ? 4 : 2));
+
+                    var points = row.Children[4].InnerText.Replace(".", "").Trim();
+                    int.TryParse(points, out pinfo.BonusPointsPerSquare);
+
+                    var price = Regex.Replace(row.Children[5].InnerText, "[^0-9,]", "").Replace(',', '.');
+                    double.TryParse(price, NumberStyles.Any, CultureInfo.InvariantCulture, out pinfo.BasePrice);
+
+                } catch (Exception exc) {
+                    Logger.Error("Cannot load vegtable info: " + exc.Message + "\nat\n" + row.OuterHtml.Trim());
+                }
+            }
+        }
+
+        static private void updateProductsInfo(string buttonId, string expectedElementClass) {
+            // Go to Products Category (must be in help first)
+            Browser.Click(buttonId);
+            Browser.WaitForClass(expectedElementClass, "div");
+
+            var content = Browser.GetElementById("newhelp_content");
+            var rows = Browser.getOffspringByClass(content, "newhelp_line", "td");
+            foreach (HtmlElement row in rows) {
+                try {
+                    var pinfo = new Diary();
+                    pinfo.ID = int.Parse(row.Children[0].Children[0].GetAttribute("className")
+                                       .Split(new string[] { "kp" }, StringSplitOptions.None)[1].Split(' ')[0]);
+
+                    if (Store.Diaries.ContainsKey(pinfo.ID))
+                        pinfo = Store.Diaries[pinfo.ID];
+                    else
+                        Store.Diaries.Add(pinfo.ID, pinfo);
+
+                    pinfo.Name = row.Children[0].Children[1].InnerText.Trim();
+
+                    var time = Regex.Replace(row.Children[1].InnerText, "[^0-9:]", "").Split(':');
+                    pinfo.GrowthTime = new TimeSpan(int.Parse(time[0]), int.Parse(time[1]), int.Parse(time[2]));
+
+                    pinfo.HarvestFromIndividual = int.Parse(row.Children[2].InnerText);
+
+                    var points = row.Children[3].InnerText.Replace(".", "").Trim();
+                    int.TryParse(points, out pinfo.BonusPointsPerSquare);
+
+                } catch (Exception exc) {
+                    Logger.Error("Cannot load vegtable info: " + exc.Message + "\nat\n" + row.OuterHtml.Trim());
+                }
+            }
+        }
     }
+
+
+
+
+
 }

@@ -9,15 +9,15 @@ using WFManager;
 
 namespace WFManager {
     public static class Serializer {
-        public static void Serialize <T> (List<T> list, Stream stream) {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("List"));
+        public static void Serialize <T> (T obj, Stream stream) {
+            XmlSerializer serializer = new XmlSerializer(typeof(T), new XmlRootAttribute("Root"));
             using (StreamWriter writer = new StreamWriter(stream))
-                serializer.Serialize(writer, list);
+                serializer.Serialize(writer, obj);
         }
 
-        public static List<T> Deserialize <T> (Stream stream) {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("List"));
-            return (List<T>) serializer.Deserialize(stream);
+        public static T Deserialize <T> (Stream stream) {
+            XmlSerializer serializer = new XmlSerializer(typeof(T), new XmlRootAttribute("Root"));
+            return (T) serializer.Deserialize(stream);
         }
     }
 }
