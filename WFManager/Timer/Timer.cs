@@ -53,7 +53,7 @@ namespace WFManager {
 
                                 case EventType.CROP:
                                     WF.LogIn();
-                                    int pId = V.Zioła;
+                                    int pId = V.Bodziszki;
                                     //if (DateTime.Now.Hour >= 12)
                                     //    pId = V.Kalafiory;
                                     //if (DateTime.Now.Hour >= 19)
