@@ -19,9 +19,11 @@ namespace WFManager {
                 return null;
             }
         }
-
-        public double LowestPriceNow {
+        
+        public override double BuyPrice {
             get {
+                if (!IsAvailable)
+                    throw new ProductNotAvailableException();
                 double? pr = LastMarketPrice;
                 if (pr.HasValue && pr.Value < BasePrice)
                     return pr.Value;

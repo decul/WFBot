@@ -10,32 +10,29 @@ using System.Xml.Serialization;
 
 namespace WFManager {
     public class Store {
+        
+        public SDictionary<int, Vegetable> _vegetables = new SDictionary<int, Vegetable>();
+        public SDictionary<int, Diary> _diaries = new SDictionary<int, Diary>();
 
-        [XmlIgnore]
-        public Dictionary<int, Vegetable> _vegetables = new Dictionary<int, Vegetable>();
-        [XmlIgnore]
-        public Dictionary<int, Diary> _diaries = new Dictionary<int, Diary>();
-
-
-
-        public List<Vegetable> _vegetablesList {
-            get { return store._vegetables.Values.ToList(); }
-            set { store._vegetables = value.ToDictionary(v => v.ID); }
-        }
-        public List<Diary> _diariesList {
-            get { return store._diaries.Values.ToList(); }
-            set { store._diaries = value.ToDictionary(d => d.ID); }
-        }
-
-
+        
 
         static private Store store = new Store();
 
-        static public Dictionary<int, Vegetable> Vegetables {
+        static public  SDictionary<int, Product> Products {
+            get {
+                var products = new SDictionary<int, Product>();
+                foreach (var prod in store._vegetables)
+                    products.Add(prod.Key, prod.Value);
+                foreach (var prod in store._diaries)
+                    products.Add(prod.Key, prod.Value);
+                return products;
+            }
+        }
+        static public SDictionary<int, Vegetable> Vegetables {
             get { return store._vegetables; }
             set { store._vegetables = value; }
         }
-        static public Dictionary<int, Diary> Diaries {
+        static public SDictionary<int, Diary> Diaries {
             get { return store._diaries; }
             set { store._diaries = value; }
         }
@@ -118,13 +115,13 @@ namespace WFManager {
             XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("Vegetables"));
             try {
                 using (FileStream file = new FileStream(dir + "\\Vegetables.xml", FileMode.Open))
-                    Vegetables = ((List<Vegetable>)serializer.Deserialize(file)).ToDictionary(p => p.ID, p => p);
+                    Vegetables = SDictionary.FromList((List<Vegetable>)serializer.Deserialize(file));
             } catch (FileNotFoundException exc) { } catch (DirectoryNotFoundException exc) { }
 
             serializer = new XmlSerializer(typeof(List<Diary>), new XmlRootAttribute("Diaries"));
             try {
                 using (FileStream file = new FileStream(dir + "\\Diaries.xml", FileMode.Open))
-                    Diaries = ((List<Diary>)serializer.Deserialize(file)).ToDictionary(p => p.ID, p => p);
+                    Diaries = SDictionary.FromList((List<Diary>)serializer.Deserialize(file));
             } catch (FileNotFoundException exc) { } catch (DirectoryNotFoundException exc) { }
         }
 
