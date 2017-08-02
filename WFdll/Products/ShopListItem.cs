@@ -14,11 +14,11 @@ namespace WFManager {
         public Product Product;
         public int Quantity;
         
-        // Used only for serialization
+        // Used for serialization
         [XmlElement("ProductId")]
-        public int productId {
+        public int ProductId {
             get { return Product.ID; }
-            //set { Product = Store.getProduct(value); }
+            set { Product = Store.Products[value]; }
         }
     }
 }

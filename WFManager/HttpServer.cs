@@ -29,26 +29,45 @@ namespace WFManager {
         private static void Recive(IAsyncResult result) {
             HttpListener listener = (HttpListener)result.AsyncState;
             HttpListenerContext context = listener.EndGetContext(result);
-            HttpListenerRequest request = context.Request;
 
-            if (request.HttpMethod == "GET") {
-                switch (request.Headers.Get("requested_resource")) {
-                    case "AvailableVegetables":
-                        Serializer.Serialize(Store.AvailableVegetables, context.Response.OutputStream);
-                        break;
+            try {
+                HttpListenerRequest request = context.Request;
 
-                    case "AvailableDiaries":
-                        Serializer.Serialize(Store.AvailableDiaries, context.Response.OutputStream);
-                        break;
+                if (request.HttpMethod == "GET") {
+                    switch (request.Headers.Get("requested_resource")) {
+                        case "Store":
+                            Store.Serialize(context.Response.OutputStream);
+                            using (FileStream file = new FileStream("Shit", FileMode.Create))
+                                Store.Serialize(file);
+                            break;
+
+                        case "AvailableVegetables":
+                            Serializer.Serialize(Store.AvailableVegetables, context.Response.OutputStream);
+                            break;
+
+                        case "AvailableDiaries":
+                            Serializer.Serialize(Store.AvailableDiaries, context.Response.OutputStream);
+                            break;
+                    }
+
+
                 }
 
-                
+                //StreamReader reader = new StreamReader(request.InputStream);
+                //string content = reader.ReadToEnd();
+
+                context.Response.Close();
+            }
+            catch (Exception e) {
+                //string msg = e.Message;
+                //for (var exc = e.InnerException; e != null; e = e.InnerException) {
+                //    if (exc.Message != null)
+                //        msg += "\n\n" + e.Message;
+                //}
+                //Logger.Error(msg + "\n\n" + e.StackTrace);
+                Logger.Error(e.ToString());
             }
 
-            //StreamReader reader = new StreamReader(request.InputStream);
-            //string content = reader.ReadToEnd();
-
-            context.Response.Close();
             listener.BeginGetContext(Recive, listener);
         }
     }

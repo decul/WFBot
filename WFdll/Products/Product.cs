@@ -33,6 +33,10 @@ namespace WFManager {
         
 
 
+        public bool IsAvailable {
+            get { return PriceHistory.Any(); }
+        }
+
         public double? LastNotNullMarketPrice {
             get {
                 PriceRecord record = PriceHistory.LastOrDefault(r => r.price.HasValue);
@@ -69,6 +73,21 @@ namespace WFManager {
             PriceHistory.Add(new PriceRecord(DateTime.Now, price));
         }
 
+        /// <exception cref="ProductNotAvailableException">
+        ///     Thrown when product is not available on current level
+        /// </exception>
+        /// <exception cref="ProductNotAccessibleException">
+        ///     Thrown when product is not currently accessible on market
+        /// </exception>
+        public virtual double BuyPrice {
+            get {
+                if (!IsAvailable)
+                    throw new ProductNotAvailableException();
+                if (!PriceHistory.Last().price.HasValue)
+                    throw new ProductNotAccessibleException();
+                return PriceHistory.Last().price.Value;
+            }
+        }
 
     }
 }

@@ -19,7 +19,7 @@ namespace WFManager {
             InitializeComponent();
 
             Browser.Initialize(webBrowser);
-            Store.XmlDeserialize();
+            Store.XmlDeserialize(WF.storagePath);
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
             HttpServer.StartListenning();
@@ -35,7 +35,7 @@ namespace WFManager {
             WF.LogIn("owczy_farmer", "farmernia", 10);
             
             if (!Store.Vegetables.Any())
-                Store.UpdateProductsInfo();
+                WF.UpdateProductsInfo();
 
             stopButton.Enabled = true;
 

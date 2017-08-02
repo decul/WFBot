@@ -209,11 +209,11 @@ namespace WFManager {
             var grain = Store.Vegetables[1];
             var corn = Store.Vegetables[2];
 
-            var cheaperFood = (2 * grain.LowestPriceNow < corn.LowestPriceNow) ? grain : corn;
+            var cheaperFood = (2 * grain.BuyPrice < corn.BuyPrice) ? grain : corn;
             bool feedFull = true;
 
-            if (egg.LastNotNullMarketPrice * 0.9 < cheaperFood.LowestPriceNow * (cheaperFood.ID == 1 ? 12 : 6)) { 
-                cheaperFood = (grain.LowestPriceNow < corn.LowestPriceNow ? grain : corn);
+            if (egg.LastNotNullMarketPrice * 0.9 < cheaperFood.BuyPrice * (cheaperFood.ID == 1 ? 12 : 6)) { 
+                cheaperFood = (grain.BuyPrice < corn.BuyPrice ? grain : corn);
                 feedFull = false;
             }
             
