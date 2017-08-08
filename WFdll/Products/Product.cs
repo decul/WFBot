@@ -10,7 +10,12 @@ namespace WFManager {
 
     [Serializable]
     public class Product {
-        
+        public Product() { }
+        public Product(int id) {
+            ID = id;
+        }
+
+
         public int ID;
         public string Name;
 
@@ -18,6 +23,8 @@ namespace WFManager {
         public TimeSpan GrowthTime;
         public int HarvestFromIndividual;
         public int BonusPointsPerSquare;
+        
+        public double BasePrice;
 
         [XmlElement("PriceRecord")]
         public List<PriceRecord> PriceHistory = new List<PriceRecord>();
@@ -73,18 +80,13 @@ namespace WFManager {
             PriceHistory.Add(new PriceRecord(DateTime.Now, price));
         }
 
-        /// <exception cref="ProductNotAvailableException">
-        ///     Thrown when product is not available on current level
-        /// </exception>
-        /// <exception cref="ProductNotAccessibleException">
-        ///     Thrown when product is not currently accessible on market
-        /// </exception>
+        /// <exception cref="AvailabilityException"></exception>
         public virtual double BuyPrice {
             get {
                 if (!IsAvailable)
-                    throw new ProductNotAvailableException();
+                    throw new LvlAvailabilityException();
                 if (!PriceHistory.Last().price.HasValue)
-                    throw new ProductNotAccessibleException();
+                    throw new MarketAvailabilityException();
                 return PriceHistory.Last().price.Value;
             }
         }

@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 
 namespace WFManager {
-    class Picnic : Product {
-        List<ShopListItem> Ingredients;
+    public class Picnic : Product {
+        public Picnic() { }
+        public Picnic(int id) : base(id) { }
+
+
+        public List<Ingredient> Ingredients;
 
 
 
 
-        /// <exception cref="ProductNotAvailableException">
-        ///     Thrown when one of ingredients is not available on current level
-        /// </exception>
-        /// <exception cref="ProductNotAccessibleException">
-        ///     Thrown when one of ingredients is not currently accessible on market
-        /// </exception>
+        /// <exception cref="AvailabilityException"></exception>
         public double productionCost {
             get {
                 double cost = 0.0;

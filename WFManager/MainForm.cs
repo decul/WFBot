@@ -34,7 +34,7 @@ namespace WFManager {
             Logger.Label("Hello");
             WF.LogIn("owczy_farmer", "farmernia", 10);
             
-            if (!Store.Vegetables.Any())
+            if (!Store.Juices.Any())
                 WF.UpdateProductsInfo();
 
             stopButton.Enabled = true;

@@ -27,8 +27,8 @@ namespace WFManager {
             Browser.WaitForId("marketcategories");
 
             for (int cat = 1; cat <= 8; cat++) {
-                // Check only vegetables and diary
-                if (cat != 1 && cat != 2)
+                // Check only vegetables, diary and picnics
+                if (!new List<int>(){ 1, 2, 4 }.Contains(cat))
                     continue;
 
                 // Go to Product category
@@ -48,7 +48,7 @@ namespace WFManager {
                     Browser.WaitForId("marktoffers_rows");
 
                     // Save price
-                    Store.Get(productId).AddPrice(getPriceOfFirstRow());
+                    Store.Products[productId].AddPrice(getPriceOfFirstRow());
 
                     // Go back to All products
                     Browser.Click("market_navi5");

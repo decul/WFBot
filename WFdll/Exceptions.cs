@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WFManager {
-    class ProductNotAccessibleException : Exception { }
+    class AvailabilityException : Exception { }
 
-    class ProductNotAvailableException : Exception { }
+    class MarketAvailabilityException : AvailabilityException { }
+
+    class LvlAvailabilityException : AvailabilityException { }
 }

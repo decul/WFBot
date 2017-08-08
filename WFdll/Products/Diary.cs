@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace WFManager {
     public class Diary : Product {
+        public Diary() { }
+        public Diary(int id) : base(id) { }
 
         public double HourlyHarvestPerAnimal {
             get {

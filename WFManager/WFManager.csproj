@@ -85,6 +85,7 @@
     <Compile Include="Places\ElFarmado.cs" />
     <Compile Include="Places\ElFishado.cs" />
     <Compile Include="Places\Farm.cs" />
+    <Compile Include="HelpTableRow.cs" />
     <Compile Include="Timer\Event.cs" />
     <Compile Include="Timer\EventType.cs" />
     <Compile Include="MainForm.cs">

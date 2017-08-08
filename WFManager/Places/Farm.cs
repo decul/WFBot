@@ -59,15 +59,7 @@ namespace WFManager {
                 // Sow
                 Browser.Click("rackitem" + productId);
                 Browser.Wait(1000);
-
-                //for (int s = 1; s <= 120; s++) {
-                //    var square = Browser.GetElementById("field" + s).Children[0];
-                //    if (canBeSown(square)) {
-                //        square.InvokeMember("click");
-                //        Browser.WaitFor(() => !canBeSown(Browser.GetElementById("field" + s).Children[0]), 0);
-                //    }
-                //}
-
+                
                 var veg = Store.Vegetables[productId];
 
                 for (int attempt = 0; attempt < 3; attempt++) {
@@ -81,19 +73,10 @@ namespace WFManager {
                     }
                     if (waitForAllSquaresToLoad())
                         break;
-                    if (attempt > 1)
-                        Logger.Error("Field has not been sown after 3 attempts");
                 }
-
-                //foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
-                //    HtmlElement square = outerSquare.Children[0];
-                //    if (canBeSown(square)) 
-                //        square.InvokeMember("click");
-                //}
-                //waitForAllSquaresToLoad();
-
-            // Close field
-            Browser.Click("gardencancel");
+                
+                // Close field
+                Browser.Click("gardencancel");
                 Browser.Wait(1000);
             }
             
@@ -165,12 +148,7 @@ namespace WFManager {
 
             return true;
         }
-
-        //private static bool isLoading(HtmlElement square) {
-        //    assertInnerSquare(square);
-        //    return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/loading.gif");
-        //}
-
+        
         private static bool isWatered(HtmlElement square) {
             assertInnerSquare(square);
             return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/garten/gegossen.gif");
@@ -205,7 +183,7 @@ namespace WFManager {
             travelToFarm();
 
             // Calculate feeding strategy
-            var egg = Store.Get(9);
+            var egg = Store.Products[9];
             var grain = Store.Vegetables[1];
             var corn = Store.Vegetables[2];
 

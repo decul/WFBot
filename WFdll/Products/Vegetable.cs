@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace WFManager {
     public class Vegetable : Product {
+        public Vegetable() { }
+        public Vegetable(int id) : base(id) { }
+
         public int Size;
-        public double BasePrice;
 
         public double? LastMarketPrice {
             get {
@@ -23,7 +25,7 @@ namespace WFManager {
         public override double BuyPrice {
             get {
                 if (!IsAvailable)
-                    throw new ProductNotAvailableException();
+                    throw new LvlAvailabilityException();
                 double? pr = LastMarketPrice;
                 if (pr.HasValue && pr.Value < BasePrice)
                     return pr.Value;
