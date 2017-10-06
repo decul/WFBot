@@ -29,6 +29,17 @@ namespace WFManager {
             get { return Store.Products[ProductId]; }
             set { ProductId = value.ID; }
         }
-        
+
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double Cost {
+            get { return Product.BuyPrice * Quantity; }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double LastCost {
+            get { return Product.LastBuyPrice * Quantity; }
+        }
+
     }
 }

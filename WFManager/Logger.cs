@@ -13,6 +13,9 @@ namespace WFManager {
         private static StreamWriter infoLogFile;
         private static StreamWriter errorLogFile;
 
+        private static object infoLock = new object();
+        private static object errorLock = new object();
+
         private static bool msgLocked = false;
 
         private static Label infoLabel;
@@ -24,7 +27,7 @@ namespace WFManager {
 
 
         public static void Info(string s, params object[] args) {
-            lock ("InfoLock") {
+            lock (infoLock) {
                 // Open file if not opened
                 if (infoLogFile == null || infoLogFile.BaseStream == null) {
                     string dir = WF.storagePath;
@@ -42,7 +45,7 @@ namespace WFManager {
         }
 
         public static void Error(string s, params object[] args) {
-            lock ("ErrorLock") {
+            lock (errorLock) {
                 // Open file if not opened
                 if (errorLogFile == null || errorLogFile.BaseStream == null) {
                     string dir = WF.storagePath;

@@ -8,6 +8,6 @@ namespace WFManager {
 
     [Serializable]
     public enum EventType {
-        PRICES_UPDATE, CROP, FEED_CHICKENS, CHECK_MAIL, LOTTERY
+        PRICES_UPDATE, CROP, FEED_CHICKENS, CHECK_MAIL, LOTTERY, PLANT_TREES, SERVE_WOOD_NPC
     }
 }

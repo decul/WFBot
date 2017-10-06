@@ -11,57 +11,65 @@ namespace WFManager {
 
         public int Size;
 
-        public double? LastMarketPrice {
-            get {
-                if (PriceHistory != null) {
-                    PriceRecord pr = PriceHistory.LastOrDefault();
-                    if (pr != null)
-                        return pr.price;
-                }
-                return null;
-            }
-        }
-        
+
+
+
+        /// <exception cref="AvailabilityException"></exception>
         public override double BuyPrice {
             get {
-                if (!IsAvailable)
-                    throw new LvlAvailabilityException();
-                double? pr = LastMarketPrice;
-                if (pr.HasValue && pr.Value < BasePrice)
-                    return pr.Value;
-                else
+                try {
+                    return Math.Min(MarketPrice, BasePrice);
+                } catch (MarketAvailabilityException) {
                     return BasePrice;
+                }
             }
         }
 
-        public double HourlyHarvestPerField {
+        /// <exception cref="AvailabilityException"></exception>
+        public override double LastBuyPrice {
             get {
-                return (HarvestFromIndividual - 1) * 120.0 / Size / GrowthTime.TotalHours;
+                return BuyPrice;
             }
         }
 
-        public double HourlyBonusPerField {
+        /// <exception cref="AvailabilityException"></exception>
+        public override double SellPrice {
             get {
-                return BonusPointsPerSquare * 120.0 / Size / GrowthTime.TotalHours;
+                try {
+                    return Math.Min(MarketPrice, BasePrice) * 0.95;
+                } catch (MarketAvailabilityException) {
+                    return BasePrice * 0.95;
+                }
+            }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public override double LastSellPrice {
+            get {
+                return SellPrice;
             }
         }
 
 
-        //public double AvgMarketPriceThisDay {
-        //    get {
 
-        //    }
-        //}
-        
-        public double HourlyProfitPerField(double? marketPrice) {
-            double lowPrice = marketPrice == null ? BasePrice : Math.Min(marketPrice.Value, BasePrice);
-            return lowPrice * 0.9 * HourlyHarvestPerField;
+
+        public double DailyHarvestPerField {
+            get { return (HarvestFromIndividual - 1) * 120.0 / Size / GrowthTime.TotalDays; }
         }
 
-        public double? PercentageMarketPriceExcess(double? marketPrice) {
-            if (!marketPrice.HasValue)
-                return null;
-            return marketPrice.Value / BasePrice * 100;
+        public override double DailyBonusPerUnit {
+            get {  return BonusPointsPerSquare * 120.0 / Size / GrowthTime.TotalDays; }
+        }
+
+
+        public override double? DailyIncomePerUnit(double? givenPrice) {
+            double lowPrice = givenPrice == null ? BasePrice : Math.Min(givenPrice.Value, BasePrice);
+            return lowPrice * 0.95 * DailyHarvestPerField;
+        }
+
+        /// <exception cref="LvlAvailabilityException"></exception>
+        public override double DailyIncomePerUnit() {
+            return DailyIncomePerUnit(MarketPrice).Value;
         }
 
     }

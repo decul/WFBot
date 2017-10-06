@@ -37,8 +37,6 @@ namespace WFManager {
                     switch (request.Headers.Get("requested_resource")) {
                         case "Store":
                             Store.Serialize(context.Response.OutputStream);
-                            using (FileStream file = new FileStream("Shit", FileMode.Create))
-                                Store.Serialize(file);
                             break;
 
                         case "AvailableVegetables":

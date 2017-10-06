@@ -37,21 +37,14 @@ namespace WFManager {
             get { return GrowthTime.Ticks; }
             set { GrowthTime = new TimeSpan(value); }
         }
+
         
-
-
         public bool IsAvailable {
             get { return PriceHistory.Any(); }
         }
 
-        public double? LastNotNullMarketPrice {
-            get {
-                PriceRecord record = PriceHistory.LastOrDefault(r => r.price.HasValue);
-                if (record != null)
-                    return record.price;
-                return null;
-            }
-        }
+
+
 
         //public double? AvgPriceDay() {
         //    int count = 0;
@@ -76,19 +69,88 @@ namespace WFManager {
         //        return null;
         //}
 
-        public void AddPrice(double? price) {
-            PriceHistory.Add(new PriceRecord(DateTime.Now, price));
+        public double NpcPrice {
+            get { return BasePrice * 0.5; }
         }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double MarketPrice {
+            get {
+                if (!IsAvailable)
+                    throw new LvlAvailabilityException();
+                PriceRecord record = PriceHistory.Last();
+                if (!record.price.HasValue)
+                    throw new MarketAvailabilityException();
+                return record.price.Value;
+            }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double LastMarketPrice {
+            get {
+                if (!IsAvailable)
+                    throw new LvlAvailabilityException();
+                PriceRecord record = PriceHistory.LastOrDefault(r => r.price.HasValue);
+                if (record == null)
+                    throw new MarketAvailabilityException();
+                return record.price.Value;
+            }
+        }
+
+
 
         /// <exception cref="AvailabilityException"></exception>
         public virtual double BuyPrice {
             get {
-                if (!IsAvailable)
-                    throw new LvlAvailabilityException();
-                if (!PriceHistory.Last().price.HasValue)
-                    throw new MarketAvailabilityException();
-                return PriceHistory.Last().price.Value;
+                return MarketPrice;
             }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public virtual double LastBuyPrice {
+            get {
+                return LastMarketPrice;
+            }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public virtual double SellPrice {
+            get {
+                return MarketPrice * 0.95;
+            }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public virtual double LastSellPrice {
+            get {
+                return LastMarketPrice * 0.95;
+            }
+        }
+
+
+
+
+        /// <summary> Unit is one Field (10x12), or one animal, or one factory-building, or whatever </summary>
+        public virtual double? DailyIncomePerUnit(double? price) {
+            if (price == null)
+                return null;
+            return price * 0.95 * HarvestFromIndividual / GrowthTime.TotalDays;
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public virtual double DailyIncomePerUnit() {
+            return DailyIncomePerUnit(LastMarketPrice).Value;
+        }
+
+        public virtual double DailyBonusPerUnit {
+            get { return BonusPointsPerSquare / GrowthTime.TotalDays; }
+        }
+
+
+
+
+        public void AddPrice(double? price) {
+            PriceHistory.Add(new PriceRecord(DateTime.Now, price));
         }
 
     }

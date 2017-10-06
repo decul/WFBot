@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace WFManager {
     public class Store {
+
+        const string saveFileName = "\\Store.xml";
+
         
         public SDictionary<int, Vegetable> _vegetables = new SDictionary<int, Vegetable>();
         public SDictionary<int, Diary> _diaries = new SDictionary<int, Diary>();
@@ -22,61 +25,61 @@ namespace WFManager {
 
 
 
-        static private Store store = new Store();
+        static private Store instance = new Store();
 
         static public  SDictionary<int, Product> Products {
             get {
                 var products = new SDictionary<int, Product>();
-                foreach (var prod in store._vegetables)
+                foreach (var prod in instance._vegetables)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._diaries)
+                foreach (var prod in instance._diaries)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._juices)
+                foreach (var prod in instance._juices)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._snacks)
+                foreach (var prod in instance._snacks)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._cakes)
+                foreach (var prod in instance._cakes)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._iceCreams)
+                foreach (var prod in instance._iceCreams)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._exotics)
+                foreach (var prod in instance._exotics)
                     products.Add(prod.Key, prod.Value);
-                foreach (var prod in store._oils)
+                foreach (var prod in instance._oils)
                     products.Add(prod.Key, prod.Value);
                 return products;
             }
         }
         static public SDictionary<int, Vegetable> Vegetables {
-            get { return store._vegetables; }
-            set { store._vegetables = value; }
+            get { return instance._vegetables; }
+            set { instance._vegetables = value; }
         }
         static public SDictionary<int, Diary> Diaries {
-            get { return store._diaries; }
-            set { store._diaries = value; }
+            get { return instance._diaries; }
+            set { instance._diaries = value; }
         }
         static public SDictionary<int, Picnic> Juices {
-            get { return store._juices; }
-            set { store._juices = value; }
+            get { return instance._juices; }
+            set { instance._juices = value; }
         }
         static public SDictionary<int, Picnic> Snacks {
-            get { return store._snacks; }
-            set { store._snacks = value; }
+            get { return instance._snacks; }
+            set { instance._snacks = value; }
         }
         static public SDictionary<int, Picnic> Cakes {
-            get { return store._cakes; }
-            set { store._cakes = value; }
+            get { return instance._cakes; }
+            set { instance._cakes = value; }
         }
         static public SDictionary<int, Picnic> IceCreams {
-            get { return store._iceCreams; }
-            set { store._iceCreams = value; }
+            get { return instance._iceCreams; }
+            set { instance._iceCreams = value; }
         }
         static public SDictionary<int, Vegetable> Exotics {
-            get { return store._exotics; }
-            set { store._exotics = value; }
+            get { return instance._exotics; }
+            set { instance._exotics = value; }
         }
         static public SDictionary<int, Product> Oils {
-            get { return store._oils; }
-            set { store._oils = value; }
+            get { return instance._oils; }
+            set { instance._oils = value; }
         }
 
 
@@ -123,43 +126,21 @@ namespace WFManager {
 
 
         static public void Serialize(Stream stream) {
-            Serializer.Serialize(store, stream);
+            Serializer.Serialize(instance, stream);
         }
 
         static public void Deserialize(Stream stream) {
-            store = Serializer.Deserialize<Store>(stream);
+            instance = Serializer.Deserialize<Store>(stream);
         }
 
 
-
-
-        static public void XmlSerialize(string dir) {
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("Vegetables"));
-            using (TextWriter writer = new StreamWriter(dir + "\\Vegetables.xml"))
-                serializer.Serialize(writer, Vegetables.Select(p => p.Value).ToList());
-
-            serializer = new XmlSerializer(typeof(List<Diary>), new XmlRootAttribute("Diaries"));
-            using (TextWriter writer = new StreamWriter(dir + "\\Diaries.xml"))
-                serializer.Serialize(writer, Diaries.Select(p => p.Value).ToList());
+        static public void Save(string dir) {
+            Serializer.SaveToFile(instance, dir + saveFileName);
         }
 
-        static public void XmlDeserialize(string dir) {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Vegetable>), new XmlRootAttribute("Vegetables"));
-            try {
-                using (FileStream file = new FileStream(dir + "\\Vegetables.xml", FileMode.Open))
-                    Vegetables = SDictionary.FromList((List<Vegetable>)serializer.Deserialize(file));
-            } catch (FileNotFoundException exc) { } catch (DirectoryNotFoundException exc) { }
-
-            serializer = new XmlSerializer(typeof(List<Diary>), new XmlRootAttribute("Diaries"));
-            try {
-                using (FileStream file = new FileStream(dir + "\\Diaries.xml", FileMode.Open))
-                    Diaries = SDictionary.FromList((List<Diary>)serializer.Deserialize(file));
-            } catch (FileNotFoundException exc) { } catch (DirectoryNotFoundException exc) { }
+        static public void Load(string dir) {
+            instance = Serializer.LoadFromFile<Store>(dir + saveFileName);
         }
-
 
 
 

@@ -36,14 +36,21 @@ namespace WFManager {
             if (events.Find(ev => ev.type == EventType.LOTTERY) == null)
                 events.Add(new Event(DateTime.Now, EventType.LOTTERY));
 
+            if (events.Find(ev => ev.type == EventType.PLANT_TREES) == null)
+                events.Add(new Event(DateTime.Now, EventType.PLANT_TREES));
+
+            if (events.Find(ev => ev.type == EventType.SERVE_WOOD_NPC) == null)
+                events.Add(new Event(DateTime.Now, EventType.SERVE_WOOD_NPC));
+
+            
 
             while (!stopped) {
                 foreach (var ev in events) {
                     try {
                         if (ev.date <= DateTime.Now) {
+                            WF.LogIn();
                             switch (ev.type) {
                                 case EventType.PRICES_UPDATE:
-                                    WF.LogIn();
                                     ElFarmado.UpdatePrices();
                                     if (ev.date > DateTime.Now - TimeSpan.FromHours(0.5))
                                         ev.date += TimeSpan.FromHours(1);
@@ -52,20 +59,14 @@ namespace WFManager {
                                     break;
 
                                 case EventType.CROP:
-                                    WF.LogIn();
-                                    int pId = V.Bodziszki;
+                                    int pId = V.Bławatki;
                                     //if (DateTime.Now.Hour >= 12)
                                     //    pId = V.Kalafiory;
-                                    //if (DateTime.Now.Hour >= 19)
-                                    //    pId = V.Marchewki;
-                                    //if (DateTime.Now.Hour >= 22)
-                                    //    pId = V.Zboże;
                                     Farm.SowFields(pId);
                                     ev.date = DateTime.Now + TimeSpan.FromSeconds(Store.Vegetables[pId].GrowthTime.TotalSeconds /* 0.95*/);
                                     break;
 
                                 case EventType.FEED_CHICKENS:
-                                    WF.LogIn();
                                     ev.date = DateTime.Now + Farm.FeedChickens();
                                     break;
 
@@ -76,8 +77,19 @@ namespace WFManager {
 
                                 case EventType.LOTTERY:
                                     ElFishado.CollectFreeProducts();
-                                    ev.date = ev.date.AddDays(1);
+                                    while (ev.date <= DateTime.Now)
+                                        ev.date = ev.date.AddDays(1);
                                     break;
+
+                                case EventType.SERVE_WOOD_NPC:
+                                    ElDrzewado.ServeCustomers();
+                                    ev.date = DateTime.Now + TimeSpan.FromHours(1);
+                                    break;
+
+                                case EventType.PLANT_TREES:
+                                    ev.date = DateTime.Now + ElDrzewado.PlantTrees();
+                                    break;
+
                             }
                             SerializeEvents();
                         }

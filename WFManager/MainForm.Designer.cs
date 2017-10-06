@@ -26,10 +26,9 @@
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.startButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.infoLabel = new System.Windows.Forms.Label();
-            this.graphButton = new System.Windows.Forms.Button();
-            this.stopButton = new System.Windows.Forms.Button();
             this.versionLabel = new System.Windows.Forms.Label();
+            this.infoLabel = new System.Windows.Forms.Label();
+            this.stopButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -69,7 +68,6 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.versionLabel);
             this.splitContainer1.Panel1.Controls.Add(this.infoLabel);
-            this.splitContainer1.Panel1.Controls.Add(this.graphButton);
             this.splitContainer1.Panel1.Controls.Add(this.stopButton);
             this.splitContainer1.Panel1.Controls.Add(this.startButton);
             // 
@@ -80,25 +78,24 @@
             this.splitContainer1.SplitterDistance = 28;
             this.splitContainer1.TabIndex = 2;
             // 
+            // versionLabel
+            // 
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.Location = new System.Drawing.Point(955, 8);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(42, 13);
+            this.versionLabel.TabIndex = 5;
+            this.versionLabel.Text = "Version";
+            // 
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
-            this.infoLabel.Location = new System.Drawing.Point(282, 8);
+            this.infoLabel.Location = new System.Drawing.Point(184, 8);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(25, 13);
             this.infoLabel.TabIndex = 4;
             this.infoLabel.Text = "Info";
-            // 
-            // graphButton
-            // 
-            this.graphButton.Enabled = false;
-            this.graphButton.Location = new System.Drawing.Point(184, 3);
-            this.graphButton.Name = "graphButton";
-            this.graphButton.Size = new System.Drawing.Size(75, 23);
-            this.graphButton.TabIndex = 3;
-            this.graphButton.Text = "Wykresy";
-            this.graphButton.UseVisualStyleBackColor = true;
-            this.graphButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // stopButton
             // 
@@ -110,16 +107,6 @@
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-            // 
-            // versionLabel
-            // 
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(955, 8);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(42, 13);
-            this.versionLabel.TabIndex = 5;
-            this.versionLabel.Text = "Version";
             // 
             // MainForm
             // 
@@ -144,7 +131,6 @@
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button stopButton;
-        private System.Windows.Forms.Button graphButton;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.Label versionLabel;
     }

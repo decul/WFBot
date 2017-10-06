@@ -16,6 +16,8 @@ namespace WFManager {
         private static string password;
         private static int server;
 
+        private static DateTime lastContractDate = DateTime.MinValue;
+
 
         public static bool IsLogedIn() {
             try {
@@ -89,11 +91,31 @@ namespace WFManager {
 
                     string message = Browser.GetSiblingsByClass(subject, "messages_list_body").First().Children[0].InnerText.Replace("\n", " ");
 
-                    Logger.SlackAlert("System :: " + subject.InnerText + " :: " + message, "mail");
+                    Logger.SlackAlert("System :: " + subject.InnerText + " :: " + message, "system");
                 }
 
                 // Close Mail box
-                Browser.Click("messages_main", "mini_close");
+                Browser.InvokeScript("messagesClose");
+                Browser.Wait(1000);
+            }
+
+            exclamation = Browser.GetElementById("mainmenue3_incoming");
+            if (exclamation != null && Browser.isVisible(exclamation)) {
+                // Open Contracts
+                exclamation.Parent.InvokeMember("click");
+                Browser.WaitForId("contracts_navi_overview_in");
+
+                var dates = Browser.GetElementsByClass("contracts_list_time", "div");
+                if (dates.Any()) {
+                    DateTime date = DateTime.ParseExact(dates.First().InnerText, "dd.MM.yy, HH:mm", CultureInfo.InvariantCulture);
+                    if (date > lastContractDate) {
+                        Logger.SlackAlert("You have recived new contract", "contracts");
+                        lastContractDate = date;
+                    }
+                }
+
+                // Close Contracts
+                Browser.InvokeScript("contractsClose");
                 Browser.Wait(1000);
             }
         }
@@ -104,44 +126,7 @@ namespace WFManager {
             // Go to Help
             Browser.Click("mainmenue5");
             Browser.WaitForId("newhelp_menue_item_products_v");
-
-            //// Update Vegetables 
-            //Browser.Click("newhelp_menue_item_products_v");
-            //Browser.WaitForClass("kp17", "div");
-
-            //foreach (var row in HelpTableRow.getRows()) {
-            //    var pinfo = new Vegetable(row.ID);
-            //    if (Store.Vegetables.ContainsKey(pinfo.ID))
-            //        pinfo = Store.Vegetables[pinfo.ID];
-            //    else
-            //        Store.Vegetables.Add(pinfo.ID, pinfo);
-
-            //    pinfo.Name = row.Name;
-            //    pinfo.GrowthTime = row.GrowthTime;
-            //    pinfo.HarvestFromIndividual = row.HarvestPerUnit;
-            //    pinfo.BonusPointsPerSquare = row.BonusPoints;
-            //    pinfo.BasePrice = row.Price;
-            //    pinfo.Size = row.Size;
-            //}
-
-            //// Update Diaries
-            //Browser.Click("newhelp_menue_item_products_e");
-            //Browser.WaitForClass("kp9", "div");
-
-            //foreach (var row in HelpTableRow.getRows()) {
-            //    var pinfo = new Diary(row.ID);
-            //    if (Store.Diaries.ContainsKey(pinfo.ID))
-            //        pinfo = Store.Diaries[pinfo.ID];
-            //    else
-            //        Store.Diaries.Add(pinfo.ID, pinfo);
-
-            //    pinfo.Name = row.Name;
-            //    pinfo.GrowthTime = row.GrowthTime;
-            //    pinfo.HarvestFromIndividual = row.HarvestPerUnit;
-            //    pinfo.BonusPointsPerSquare = row.BonusPoints;
-            //    pinfo.BasePrice = row.Price;
-            //}
-
+            
             // Update products info
             updateProductInfo(Store.Vegetables, "newhelp_menue_item_products_v", "kp17");
             updateProductInfo(Store.Diaries, "newhelp_menue_item_products_e", "kp9");
@@ -175,7 +160,7 @@ namespace WFManager {
                 pinfo.BasePrice = row.Price;
             }
 
-            Store.XmlSerialize(WF.storagePath);
+            Store.Save(WF.storagePath);
 
             // Close Help
             Browser.GetChildrenByClass(Browser.GetElementById("newhelp"), "mini_close")[0].InvokeMember("click");

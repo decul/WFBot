@@ -74,16 +74,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Browser.cs" />
-    <Compile Include="GraphForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GraphForm.Designer.cs">
-      <DependentUpon>GraphForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="HttpServer.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Places\ElFarmado.cs" />
     <Compile Include="Places\ElFishado.cs" />
+    <Compile Include="Places\ElDrzewado.cs" />
     <Compile Include="Places\Farm.cs" />
     <Compile Include="HelpTableRow.cs" />
     <Compile Include="Timer\Event.cs" />
@@ -98,11 +93,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrySetup.cs" />
     <Compile Include="Timer\Timer.cs" />
-    <Compile Include="Utitily.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="WF.cs" />
-    <EmbeddedResource Include="GraphForm.resx">
-      <DependentUpon>GraphForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -5,9 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WFManager {
-    class AvailabilityException : Exception { }
+    public class AvailabilityException : Exception {
+        public AvailabilityException() : base() { }
+        public AvailabilityException(string msg) : base(msg) { }
+    }
 
-    class MarketAvailabilityException : AvailabilityException { }
+    public class MarketAvailabilityException : AvailabilityException {
+        public MarketAvailabilityException() : base() { }
+        public MarketAvailabilityException(string msg) : base(msg) { }
+    }
 
-    class LvlAvailabilityException : AvailabilityException { }
+    public class LvlAvailabilityException : AvailabilityException {
+        public LvlAvailabilityException() : base() { }
+        public LvlAvailabilityException(string msg) : base(msg) { }
+    }
 }

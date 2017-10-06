@@ -9,11 +9,7 @@ namespace WFManager {
         public Diary() { }
         public Diary(int id) : base(id) { }
 
-        public double HourlyHarvestPerAnimal {
-            get {
-                return HarvestFromIndividual / GrowthTime.TotalHours;
-            }
-        }
+
 
         //public int bestFood {
         //    get {
@@ -36,11 +32,10 @@ namespace WFManager {
         //    }
         //}
 
-        public double? HourlyProfitPerAnimal(double? price) {
-            if (!price.HasValue)
-                return null;
-            return price * 0.9 * HourlyHarvestPerAnimal;
-        }
 
+        
+
+            
+        
     }
 }

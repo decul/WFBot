@@ -6,7 +6,7 @@ using System.Net;
 
 namespace WFManager {
     class HttpClient {
-        private const string url = "http://192.168.1.53:80/Temporary_Listen_Addresses/WFManager/";
+        private const string url = "http://192.168.1.88:80/Temporary_Listen_Addresses/WFManager/";
 
         //public static List<Vegetable> AvailableVegetables {
         //    get {
@@ -29,8 +29,6 @@ namespace WFManager {
         //}
 
         public static void UpdateStore() {
-            using (FileStream file = new FileStream("What came from response stream.xml", FileMode.Create))
-                RequestResource("Store").CopyTo(file);
             Store.Deserialize(RequestResource("Store"));
         }
 

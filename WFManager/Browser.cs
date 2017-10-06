@@ -21,9 +21,11 @@ namespace WFManager {
 
 
 
+
         public static void Initialize(WebBrowser webBrowser) {
             b = webBrowser;
         }
+
 
 
 
@@ -64,13 +66,25 @@ namespace WFManager {
 
 
 
+
+        public static string GetClassName(HtmlElement element) {
+            return element.GetAttribute("className");
+        }
+
+        public static string GetClassName(string elementId) {
+            return GetClassName(Document.GetElementById(elementId));
+        }
+
+
+
+
         public static bool isVisible(HtmlElement element) {
             for (var el = element; true; el = el.Parent) {
                 if (el == null)
                     throw new NullReferenceException("Element's visibility cannot be evaluated, one of his ancestors is null");
                 if (el.TagName.ToLower() == "body")
                     return true;
-                if (el.Style != null && el.Style.Contains("display: none"))
+                if (isHidden(el))
                     return false;
             }
         }
@@ -83,25 +97,55 @@ namespace WFManager {
             return false;
         }
 
-
-
-        public static void Click(string elementId, string className = null) {
-            var element = Document.GetElementById(elementId);
-            if (className != null)
-                element = getOffspringByClass(element, className)[0];
-            if (element == null)
-                throw new NullReferenceException("Tried to click element with id " + elementId + " but it doesn't exist");
-            element.InvokeMember("click");
+        public static bool isVisible(string elementId) {
+            return isVisible(Document.GetElementById(elementId));
         }
 
-        public static bool TryClick(string elementId, string className = null) {
+        public static bool isHidden(HtmlElement element) {
+            return element.Style != null && element.Style.Contains("display: none");
+        }
+
+        public static bool isHidden(string elementId) {
+            return isHidden(Document.GetElementById(elementId));
+        }
+
+
+
+
+        public static void Click(string elementId, string offspringClassName = null) {
+            InvokeMember("click", elementId, offspringClassName);
+        }
+
+        public static void MouseOver(string elementId, string offspringClassName = null) {
+            InvokeMember("mouseover", elementId, offspringClassName);
+        }
+
+        public static void MouseOut(string elementId, string offspringClassName = null) {
+            InvokeMember("mouseout", elementId, offspringClassName);
+        }
+
+        public static bool TryClick(string elementId, string offspringClassName = null) {
             try {
-                Click(elementId, className);
+                Click(elementId, offspringClassName);
                 return true;
             } catch (Exception) {
                 return false;
             }
         }
+
+        public static void InvokeMember(string member, string elementId, string offspringClassName = null) {
+            var element = Document.GetElementById(elementId);
+            if (offspringClassName != null)
+                element = getOffspringByClass(element, offspringClassName)[0];
+            if (element == null)
+                throw new NullReferenceException("Tried to invoke '" + member + "' on element with id '" + elementId + "' but it doesn't exist");
+            element.InvokeMember(member);
+        }
+
+        public static void InvokeScript(string functionName) {
+            Document.InvokeScript(functionName);
+        }
+
 
 
 
@@ -180,9 +224,11 @@ namespace WFManager {
 
 
 
+
         public static void SetValue(string elementId, string value) {
             Document.GetElementById(elementId).SetAttribute("Value", value);
         }
+
 
 
 
@@ -190,6 +236,7 @@ namespace WFManager {
             b.Navigate(url);
             WaitForDocument();
         }
+
 
 
 

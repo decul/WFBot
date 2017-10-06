@@ -19,13 +19,13 @@ namespace WFManager {
             InitializeComponent();
 
             Browser.Initialize(webBrowser);
-            Store.XmlDeserialize(WF.storagePath);
+            Store.Load(WF.storagePath);
+            NpcHistory.Load(WF.storagePath);
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
             HttpServer.StartListenning();
-
-            graphButton.Enabled = true;
-            versionLabel.Text = Utility.AssemblyDate.ToString();
+            
+            versionLabel.Text = Util.AssemblyDate.ToString();
         }
 
         private void startButton_Click(object sender, EventArgs e) {
@@ -34,10 +34,10 @@ namespace WFManager {
             Logger.Label("Hello");
             WF.LogIn("owczy_farmer", "farmernia", 10);
             
+            stopButton.Enabled = true;
+
             if (!Store.Juices.Any())
                 WF.UpdateProductsInfo();
-
-            stopButton.Enabled = true;
 
             Timer.Run();
             Application.Exit();
@@ -45,10 +45,6 @@ namespace WFManager {
 
         private void stopButton_Click(object sender, EventArgs e) {
             Timer.Stop();
-        }
-
-        private void button1_Click(object sender, EventArgs e) {
-            new GraphForm().Show();
         }
     }
 }

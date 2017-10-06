@@ -69,11 +69,11 @@ namespace WFManager {
 
         public double Price {
             get {
-                string price = Regex.Replace(cells["Koszta"].InnerText, "[^0-9,]", "").Replace(',', '.');
-                if (price.Any())
-                    return double.Parse(price, NumberStyles.Any, CultureInfo.InvariantCulture);
-                else
+                try {
+                    return Util.ParsePrice(cells["Koszta"].InnerText);
+                } catch (Exception) {
                     return 0.0;
+                }
             }
         }
 

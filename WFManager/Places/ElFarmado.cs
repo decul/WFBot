@@ -43,6 +43,12 @@ namespace WFManager {
                                        .Split(new string[] { "market_filter_pid=" }, StringSplitOptions.None)[1]
                                        .Split(';')[0]);
 
+                    // Continue if product definition doesn't exist
+                    if (!Store.Products.ContainsKey(productId)) {
+                        Logger.Error("Cannot save price of product with id " + productId + " because its definition does not exist");
+                        continue;
+                    }
+
                     // Go to Product
                     productElement.InvokeMember("click");
                     Browser.WaitForId("marktoffers_rows");
@@ -56,10 +62,10 @@ namespace WFManager {
                 }
             }
 
-            Store.XmlSerialize(WF.storagePath);
+            Store.Save(WF.storagePath);
 
             // Close market
-            Browser.GetChildrenByClass(Browser.GetElementById("market"), "close").First().InvokeMember("click");
+            Browser.InvokeScript("closeMarket");
         }
 
         private static double? getPriceOfFirstRow() {

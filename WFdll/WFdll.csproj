@@ -48,13 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NPCs\Npc.cs" />
+    <Compile Include="NPCs\NpcHistory.cs" />
+    <Compile Include="NPCs\PicnicNpc.cs" />
+    <Compile Include="NPCs\WoodNpc.cs" />
     <Compile Include="Products\D.cs" />
     <Compile Include="Products\Diary.cs" />
     <Compile Include="Products\Picnic.cs" />
     <Compile Include="Products\PriceRecord.cs" />
     <Compile Include="Products\Product.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="Products\ShopListItem.cs" />
+    <Compile Include="Products\Ingredient.cs" />
     <Compile Include="Products\Store.cs" />
     <Compile Include="Products\V.cs" />
     <Compile Include="Products\Vegetable.cs" />
