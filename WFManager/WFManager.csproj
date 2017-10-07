@@ -78,7 +78,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Places\ElFarmado.cs" />
     <Compile Include="Places\ElFishado.cs" />
-    <Compile Include="Places\ElDrzewado.cs" />
+    <Compile Include="Places\ElWoodo.cs" />
     <Compile Include="Places\Farm.cs" />
     <Compile Include="HelpTableRow.cs" />
     <Compile Include="Timer\Event.cs" />

@@ -19,4 +19,9 @@ namespace WFManager {
         public LvlAvailabilityException() : base() { }
         public LvlAvailabilityException(string msg) : base(msg) { }
     }
+
+    public class QuietException : Exception {
+        public QuietException() : base() { }
+        public QuietException(string msg) : base(msg) { }
+    }
 }

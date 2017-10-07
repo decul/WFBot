@@ -112,6 +112,10 @@ namespace WFManager {
 
 
 
+        public static void Click(HtmlElement element) {
+            element.InvokeMember("click");
+        }
+
         public static void Click(string elementId, string offspringClassName = null) {
             InvokeMember("click", elementId, offspringClassName);
         }

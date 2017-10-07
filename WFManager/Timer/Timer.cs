@@ -42,7 +42,9 @@ namespace WFManager {
             if (events.Find(ev => ev.type == EventType.SERVE_WOOD_NPC) == null)
                 events.Add(new Event(DateTime.Now, EventType.SERVE_WOOD_NPC));
 
-            
+            if (events.Find(ev => ev.type == EventType.CUT_WOOD) == null)
+                events.Add(new Event(DateTime.Now, EventType.CUT_WOOD));
+
 
             while (!stopped) {
                 foreach (var ev in events) {
@@ -82,20 +84,29 @@ namespace WFManager {
                                     break;
 
                                 case EventType.SERVE_WOOD_NPC:
-                                    ElDrzewado.ServeCustomers();
+                                    ElWoodo.ServeCustomers();
                                     ev.date = DateTime.Now + TimeSpan.FromHours(1);
                                     break;
 
                                 case EventType.PLANT_TREES:
-                                    ev.date = DateTime.Now + ElDrzewado.PlantTrees();
+                                    ev.date = DateTime.Now + ElWoodo.PlantTrees();
+                                    break;
+
+                                case EventType.CUT_WOOD:
+                                    ev.date = DateTime.Now + ElWoodo.CutTheWood();
                                     break;
 
                             }
                             SerializeEvents();
                         }
-                    } catch (ObjectDisposedException e) {
+                    } 
+                    catch (ObjectDisposedException e) {
                         stopped = true;
-                    } catch (Exception e) {
+                    } 
+                    catch (QuietException e) {
+                        Logger.Info(e.Message);
+                    }
+                    catch (Exception e) {
                         var type = e.GetType();
                         Logger.Error(e.Message + "\n\n" + e.StackTrace);
                     }

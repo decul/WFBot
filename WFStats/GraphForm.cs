@@ -149,6 +149,7 @@ namespace WFManager {
 
             for (int i = 0; i < products.Count; i++) {
                 GridView.Rows[i].Cells[NameColumn.Index].Value = products[i].Name;
+                GridView.Rows[i].Cells[BuyPriceColumn.Index].Value = products[i].LastBuyPrice;
                 try {
                     GridView.Rows[i].Cells[IncomeColumn.Index].Value = products[i].DailyIncomePerUnit();
                 } catch (MarketAvailabilityException) { }

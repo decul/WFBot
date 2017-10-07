@@ -69,7 +69,11 @@ namespace WFManager {
 
         /// <exception cref="LvlAvailabilityException"></exception>
         public override double DailyIncomePerUnit() {
-            return DailyIncomePerUnit(MarketPrice).Value;
+            try {
+                return DailyIncomePerUnit(MarketPrice).Value;
+            } catch (MarketAvailabilityException) {
+                return DailyIncomePerUnit(null).Value;
+            }
         }
 
     }

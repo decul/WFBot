@@ -36,6 +36,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.GridView = new System.Windows.Forms.DataGridView();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BuyPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IncomeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BonusColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -175,6 +176,7 @@
             this.GridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.GridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NameColumn,
+            this.BuyPriceColumn,
             this.IncomeColumn,
             this.BonusColumn,
             this.TimeColumn});
@@ -193,11 +195,18 @@
             this.NameColumn.Name = "NameColumn";
             this.NameColumn.ReadOnly = true;
             // 
+            // BuyPriceColumn
+            // 
+            this.BuyPriceColumn.HeaderText = "Cena / szt";
+            this.BuyPriceColumn.Name = "BuyPriceColumn";
+            this.BuyPriceColumn.ReadOnly = true;
+            // 
             // IncomeColumn
             // 
             this.IncomeColumn.HeaderText = "Zarobek / 24h";
             this.IncomeColumn.Name = "IncomeColumn";
             this.IncomeColumn.ReadOnly = true;
+            this.IncomeColumn.Width = 110;
             // 
             // BonusColumn
             // 
@@ -245,11 +254,12 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.DataGridView GridView;
+        private System.Windows.Forms.ComboBox typeComboBox;
+        private System.Windows.Forms.ComboBox categoryComboBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn BuyPriceColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn IncomeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn BonusColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn TimeColumn;
-        private System.Windows.Forms.ComboBox typeComboBox;
-        private System.Windows.Forms.ComboBox categoryComboBox;
     }
 }
