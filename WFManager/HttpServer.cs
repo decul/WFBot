@@ -57,12 +57,6 @@ namespace WFManager {
                 context.Response.Close();
             }
             catch (Exception e) {
-                //string msg = e.Message;
-                //for (var exc = e.InnerException; e != null; e = e.InnerException) {
-                //    if (exc.Message != null)
-                //        msg += "\n\n" + e.Message;
-                //}
-                //Logger.Error(msg + "\n\n" + e.StackTrace);
                 Logger.Error(e.ToString());
             }
 

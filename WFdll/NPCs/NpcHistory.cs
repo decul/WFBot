@@ -38,6 +38,13 @@ namespace WFManager {
 
 
 
+        static public void recalculatePrices <T> (List<T> transactions) where T : Npc {
+
+        }
+
+
+
+
         static public void Serialize(Stream stream) {
             Serializer.Serialize(instance, stream);
         }

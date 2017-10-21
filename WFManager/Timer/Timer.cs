@@ -61,11 +61,7 @@ namespace WFManager {
                                     break;
 
                                 case EventType.CROP:
-                                    int pId = V.Bławatki;
-                                    //if (DateTime.Now.Hour >= 12)
-                                    //    pId = V.Kalafiory;
-                                    Farm.SowFields(pId);
-                                    ev.date = DateTime.Now + TimeSpan.FromSeconds(Store.Vegetables[pId].GrowthTime.TotalSeconds /* 0.95*/);
+                                    ev.date = DateTime.Now + Farm.SowFields(V.Bławatki);
                                     break;
 
                                 case EventType.FEED_CHICKENS:
@@ -110,6 +106,9 @@ namespace WFManager {
                         var type = e.GetType();
                         Logger.Error(e.Message + "\n\n" + e.StackTrace);
                     }
+
+                    if (stopped)
+                        break;
                 }
                 Browser.Wait(1000);
             }

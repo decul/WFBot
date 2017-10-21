@@ -24,7 +24,7 @@ namespace WFManager {
             Timer.DeserializeEvents();
             Logger.Initialize(infoLabel);
             HttpServer.StartListenning();
-            
+
             versionLabel.Text = Util.AssemblyDate.ToString();
         }
 
@@ -33,10 +33,11 @@ namespace WFManager {
 
             Logger.Label("Hello");
             WF.LogIn("owczy_farmer", "farmernia", 10);
-            
+            WF.removeAds();
+
             stopButton.Enabled = true;
 
-            if (!Store.Juices.Any())
+            if (!Store.Seedlings.Any())
                 WF.UpdateProductsInfo();
 
             Timer.Run();

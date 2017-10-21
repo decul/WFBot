@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,6 +27,9 @@ namespace WFManager {
         public static TimeSpan SowFields(int productId) {
             travelToFarm();
             
+            var vegetable = Store.Vegetables[productId];
+            TimeSpan timeToHarvest = TimeSpan.Zero;
+
             int fieldsCount = Browser.GetElementsByClass("bm1").Count;
             for (int f = 0; f < fieldsCount; f++) {
                 // Go to Field
@@ -46,76 +50,58 @@ namespace WFManager {
                 } else {
                     Browser.Click("ernten");
                     Browser.Wait(1000);
-
-                    foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
-                        HtmlElement square = outerSquare.Children[0];
-                        if (canBeHarvested(square)) {
-                            square.InvokeMember("click");
-                            Browser.Wait(250);
-                        }
-                    }
+                    tryToClickAllSquares(1, canBeHarvested);
                 }
 
                 // Sow
                 Browser.Click("rackitem" + productId);
                 Browser.Wait(1000);
-                
-                var veg = Store.Vegetables[productId];
-
-                for (int attempt = 0; attempt < 3; attempt++) {
-                    for (int col = 0; col < 12; col += (veg.Size > 1 ? 2 : 1)) {
-                        for (int row = 0; row < 10; row += (veg.Size > 2 ? 2 : 1)) {
-                            int index = row * 12 + col + 1;
-                            HtmlElement square = Browser.GetElementById("f" + index);
-                            if (canBeSown(square))
-                                square.InvokeMember("click");
-                        }
-                    }
-                    if (waitForAllSquaresToLoad())
-                        break;
-                }
+                tryToClickAllSquares(vegetable.Size, canBeSown);
                 
                 // Close field
                 Browser.Click("gardencancel");
                 Browser.Wait(1000);
             }
-            
-            //for (int f = 0; f < fieldsCount; f++) {
-            //    // Go to Field
-            //    var field = Browser.GetElementsByClass("bm1")[f];
-            //    Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
-            //    Browser.WaitForId("cropall");
 
-            //    // Water field
-            //    if (Browser.GetElementById("waterall").GetAttribute("className").Split(' ').Contains("waterall")) {
-            //        Browser.Click("waterall");
-            //        Browser.Wait(1000);
-            //    }
-            //    else {
-            //        Browser.Click("giessen");
-            //        Browser.Wait(1000);
+            for (int f = 0; f < fieldsCount; f++) {
+                // Go to Field
+                var field = Browser.GetElementsByClass("bm1")[f];
+                Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
+                Browser.WaitForId("cropall");
 
-            //        foreach (HtmlElement outerSquare in Browser.GetElementById("gardenarea").Children) {
-            //            HtmlElement square = outerSquare.Children[0];
-            //            if (isHarvestable(square)) {
-            //                square.InvokeMember("click");
-            //                Browser.Wait(300);
-            //            }
-            //        }
-            //        waitForWatering();
-            //    }
+                // Water field
+                if (Browser.GetElementById("waterall").GetAttribute("className").Split(' ').Contains("waterall")) {
+                    Browser.Click("waterall");
+                    Browser.Wait(1000);
+                } else {
+                    Browser.Click("giessen");
+                    Browser.Wait(1000);
 
-            //    Browser.Document.InvokeScript("parent.show_built", new object[] { 120, "out" });
-            //    Browser.WaitForId("gtt_zeit", 1000);
-            //    time = Utility.ParseTimeSpan(Browser.GetElementById("gtt_zeit").InnerText);
-            //    Logger.Label(Browser.GetElementById("gtt_zeit").InnerText);
+                    var square = Browser.GetElementById("f1");
+                    Browser.MoveCursorToElement(square);
+                    Browser.WaitFor(() => square.InnerHtml.Contains("http://mff.wavecdn.de/mff/cursors/"));
 
-            //    // Close field
-            //    Browser.Click("gardencancel");
-            //    Browser.Wait(1000);
-            //}
+                    tryToClickAllSquares(vegetable.Size, canBeWatered);
+                }
 
-            return new TimeSpan();
+                Browser.Document.InvokeScript("parent.show_built", new object[] { 120, "out" });
+                if (Browser.TryWaitForId("gtt_zeit", 1000)) {
+                    var time = Util.ParseTimeSpan(Browser.GetElementById("gtt_zeit").InnerText);
+                    if (timeToHarvest < time)
+                        timeToHarvest = time;
+                }
+
+                // Close field
+                Browser.Click("gardencancel");
+                Browser.Wait(1000);
+            }
+
+            if (timeToHarvest > TimeSpan.Zero)
+                return timeToHarvest;
+            else {
+                Logger.Error("Nie można odczytać czasu pozostałego do zbiorów");
+                return vegetable.GrowthTime;
+            }
         }
 
         private static bool canBeSown(HtmlElement square) {
@@ -149,24 +135,34 @@ namespace WFManager {
             return true;
         }
         
-        private static bool isWatered(HtmlElement square) {
+        private static bool canBeWatered(HtmlElement square) {
             assertInnerSquare(square);
-            return square.InnerHtml.Contains("http://mff.wavecdn.de/mff/garten/gegossen.gif");
+
+            if (!isHarvestable(square))
+                return false;
+            else
+                return !square.InnerHtml.Contains("http://mff.wavecdn.de/mff/garten/gegossen");
         }
 
-        private static bool waitForAllSquaresToLoad(int postWaitTime = 1000) {
-            Func<bool> predicate = () => {
-                return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => canBeSown(s)).Any();
-            };
-            return Browser.WaitFor(predicate, postWaitTime, 12000);
-        }
-
-        private static void waitForWatering(int waitTime = 1000) {
-            Func<bool> predicate = () => {
-                return !Browser.GetElementById("gardenarea").Children.Cast<HtmlElement>().Select(os => os.Children[0]).Where(s => isHarvestable(s) && !isWatered(s)).Any();
-            };
-            if (!Browser.WaitFor(predicate, waitTime))
-                throw new Exception("Wait for watering Timeout");
+        /// <summary>Try to click all squares on field satisfying squareFilter, 3 times, each time waiting till no square satisfy squareFilter anymore</summary>
+        /// <param name="vegSize">Vegetable size</param>
+        /// <param name="squareFilter">Determines both witch squares to click, and if click was successful (returned value has to change to false after successful clik</param>
+        /// <returns>Value indicating if all fields was clicked successfully</returns>
+        private static bool tryToClickAllSquares(int vegSize, Func<HtmlElement, bool> squareFilter) {
+            for (int attempt = 0; attempt < 2; attempt++) {
+                for (int col = 0; col < 12; col += (vegSize > 1 ? 2 : 1)) {
+                    for (int row = 0; row < 10; row += (vegSize > 2 ? 2 : 1)) {
+                        int index = row * 12 + col + 1;
+                        var square = Browser.GetElementById("f" + index);
+                        if (squareFilter(square))
+                            Browser.Click(square);
+                    }
+                }
+                Func<bool> successAssertion = () => Browser.GetElementsByIdLike("f[0-9]+", "gardenarea").All(s => !squareFilter(s));
+                if (Browser.WaitFor(successAssertion, 1000, 8000))
+                    return true;
+            }
+            return false;
         }
 
         private static HtmlElement assertInnerSquare(HtmlElement square) {

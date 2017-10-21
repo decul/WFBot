@@ -105,7 +105,7 @@ namespace WFManager {
                 exclamation.Parent.InvokeMember("click");
                 Browser.WaitForId("contracts_navi_overview_in");
 
-                var dates = Browser.GetElementsByClass("contracts_list_time", "div");
+                var dates = Browser.GetElementsByClass("contracts_list_time", null);
                 if (dates.Any()) {
                     DateTime date = DateTime.ParseExact(dates.First().InnerText, "dd.MM.yy, HH:mm", CultureInfo.InvariantCulture);
                     if (date > lastContractDate) {
@@ -136,10 +136,13 @@ namespace WFManager {
             updateProductInfo(Store.Snacks, "newhelp_menue_item_foodworldbld2", "kp136");
             updateProductInfo(Store.Cakes, "newhelp_menue_item_foodworldbld3", "kp161");
             updateProductInfo(Store.IceCreams, "newhelp_menue_item_foodworldbld4", "kp450");
+            updateWoods();
+            updateProductInfo(Store.Timbers, "newhelp_menue_item_forestrybld1", "f_m_symbol41");
+            updateProductInfo(Store.WoodenProducts, "newhelp_menue_item_forestrybld2", "f_m_symbol101");
 
             // Complete Picnics
             Browser.Click("newhelp_menue_item_products_fw");
-            Browser.WaitForClass("kp130", "div");
+            Browser.WaitForClass("kp130", null);
 
             foreach (var row in HelpTableRow.getRows()) {
                 Picnic pinfo;
@@ -166,11 +169,16 @@ namespace WFManager {
             Browser.GetChildrenByClass(Browser.GetElementById("newhelp"), "mini_close")[0].InvokeMember("click");
         }
 
-        private static void updateProductInfo <T> (SDictionary<int, T> dict, string categoryButtonId, string expectedClass) where T : Product {
+        private static void updateProductInfo <T> (SDictionary<int, T> dict, string categoryButtonId, string expectedClass, int firstRow = 0, int rowsNo = 9999) where T : Product {
             Browser.Click(categoryButtonId);
-            Browser.WaitForClass(expectedClass, "div");
+            Browser.WaitForClass(expectedClass, null);
 
-            foreach (var row in HelpTableRow.getRows()) {
+            var rows = HelpTableRow.getRows();
+
+            int stopIndex = Math.Min(rows.Count, rowsNo + firstRow);
+
+            for (int r = firstRow; r < stopIndex; r++) {
+                var row = rows[r];
                 var pinfo = Activator.CreateInstance<T>();
                 pinfo.ID = row.ID;
                 if (dict.ContainsKey(pinfo.ID))
@@ -179,116 +187,37 @@ namespace WFManager {
                     dict.Add(pinfo.ID, pinfo);
 
                 pinfo.Name = row.Name;
-                pinfo.HarvestFromIndividual = row.HarvestPerUnit;
+                pinfo.HarvestFromIndividual = row.HarvestPerIndividual;
                 pinfo.GrowthTime = row.GrowthTime;
-
-                if (typeof(T) == typeof(Picnic)) {
-                    ((Picnic)(object)pinfo).Ingredients = row.Ingredients;
-                } 
-                else {
-                    pinfo.BonusPointsPerSquare = row.BonusPoints;
-                    pinfo.BasePrice = row.Price;
-                }
+                pinfo.Ingredients = row.Ingredients;
+                pinfo.BonusPointsPerSquare = row.BonusPoints;
+                pinfo.BasePrice = row.Price;
 
                 if (typeof(T) == typeof(Vegetable))
                     ((Vegetable)(object)pinfo).Size = row.Size;
             }
         }
         
-        //static private void updateVegetablesInfo() {
-        //    // Go to Vegetables Products (must be in help first)
-        //    Browser.Click("newhelp_menue_item_products_v");
-        //    Browser.WaitForClass("kp17", "div");
+        private static void updateWoods() {
+            updateProductInfo(Store.Seedlings, "newhelp_menue_item_products_f", "f_m_symbol1", 0, 8);
+            updateProductInfo(Store.Woods, "newhelp_menue_item_products_f", "f_m_symbol1", 8, 8);
 
-        //    var content = Browser.GetElementById("newhelp_content");
-        //    var rows = Browser.getOffspringByClass(content, "newhelp_line", "td");
-        //    foreach (HtmlElement row in rows) {
-        //        try {
-        //            Vegetable pinfo = new Vegetable();
-        //            pinfo.ID = int.Parse(row.Children[0].Children[0].GetAttribute("className")
-        //                          .Split(new string[] { "kp" }, StringSplitOptions.None)[1].Split(' ')[0]);
+            foreach(var wood in Store.Woods.Values) {
+                var subName = wood.Name.Substring(6, 3).ToLower();
+                var seedling = Store.Seedlings.Values.Where(s => s.Name.ToLower().Contains(subName)).First();
 
-        //            if (Store.Vegetables.ContainsKey(pinfo.ID))
-        //                pinfo = Store.Vegetables[pinfo.ID];
-        //            else
-        //                Store.Vegetables.Add(pinfo.ID, pinfo);
+                wood.GrowthTime = seedling.GrowthTime;
+                wood.BonusPointsPerSquare = seedling.BonusPointsPerSquare;
+                wood.Ingredients.Add(new Ingredient(seedling.ID, 1));
+            }
+        }
 
-        //            pinfo.Name = row.Children[0].Children[1].InnerText.Trim();
-
-        //            var time = Regex.Replace(row.Children[1].InnerText, "[^0-9:]", "").Split(':');
-        //            pinfo.GrowthTime = new TimeSpan(int.Parse(time[0]), int.Parse(time[1]), int.Parse(time[2]));
-
-        //            pinfo.HarvestFromIndividual = int.Parse(row.Children[2].InnerText);
-
-        //            var sizeStr = row.Children[3].InnerText.Trim();
-        //            pinfo.Size = (sizeStr == "1x1" ? 1 : (sizeStr == "2x2" ? 4 : 2));
-
-        //            var points = row.Children[4].InnerText.Replace(".", "").Trim();
-        //            int.TryParse(points, out pinfo.BonusPointsPerSquare);
-
-        //            var price = Regex.Replace(row.Children[5].InnerText, "[^0-9,]", "").Replace(',', '.');
-        //            double.TryParse(price, NumberStyles.Any, CultureInfo.InvariantCulture, out pinfo.BasePrice);
-
-        //        } catch (Exception exc) {
-        //            Logger.Error("Cannot load vegtable info: " + exc.Message + "\nat\n" + row.OuterHtml.Trim());
-        //        }
-        //    }
-        //}
-
-        //static private void updateProductsInfo<T>() where T : Product {
-        //    foreach (var row in HelpTableRow.getRows()) {
-        //        try {
-        //            // Read ID of product
-        //            T pinfo = Activator.CreateInstance<T>();
-        //            pinfo.ID = row.ID;
-
-        //            // Find product on list, or add new one
-        //            try {
-        //                pinfo = (T)Store.Products[pinfo.ID];
-        //            } catch (KeyNotFoundException) {
-        //                if (typeof(T).Equals(typeof(Vegetable)))
-        //                    Store.Vegetables.Add(pinfo.ID, (Vegetable)(object)pinfo);
-        //                else if (typeof(T).Equals(typeof(Diary)))
-        //                    Store.Diaries.Add(pinfo.ID, (Diary)(object)pinfo);
-        //                else
-        //                    throw new Exception("Product info not found");
-        //            }
-
-        //            // Default column indexes
-        //            int bCol = 3;
-        //            int pCol = 4;
-
-        //            // Vegetable fields
-        //            if (typeof(T).Equals(typeof(Vegetable))) {
-        //                bCol = 4;
-        //                pCol = 5;
-
-        //                var sizeStr = row.Children[3].InnerText.Trim();
-        //                ((Vegetable)(object)pinfo).Size = (sizeStr == "1x1" ? 1 : (sizeStr == "2x2" ? 4 : 2));
-        //            }
-
-        //            // Common fields
-        //            pinfo.Name = row.Children[0].Children[1].InnerText.Trim();
-
-        //            var time = Regex.Replace(row.Children[1].InnerText, "[^0-9:]", "").Split(':');
-        //            pinfo.GrowthTime = new TimeSpan(int.Parse(time[0]), int.Parse(time[1]), int.Parse(time[2]));
-
-        //            pinfo.HarvestFromIndividual = int.Parse(row.Children[2].InnerText);
-
-        //            var bonus = row.Children[bCol].InnerText.Replace(".", "").Trim();
-        //            int.TryParse(bonus, out pinfo.BonusPointsPerSquare);
-
-        //            var price = Regex.Replace(row.Children[pCol].InnerText, "[^0-9,]", "").Replace(',', '.');
-        //            double.TryParse(price, NumberStyles.Any, CultureInfo.InvariantCulture, out pinfo.BasePrice);
-
-        //        } catch (Exception exc) {
-        //            Logger.Error("Cannot load vegtable info: " + exc.Message + "\nat\n" + row.OuterHtml.Trim());
-        //        }
-        //    }
-        //}
-
-        
-
+        public static void removeAds() {
+            Browser.RemoveElementById("newsbox");
+            Browser.RemoveElementById("globaltransp");
+            Browser.RemoveElementById("bubble_adtext");
+            Browser.RemoveElementById("banner_right");
+        }
         
     }
 }

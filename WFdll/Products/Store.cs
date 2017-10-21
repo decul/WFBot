@@ -22,6 +22,10 @@ namespace WFManager {
         public SDictionary<int, Picnic> _iceCreams = new SDictionary<int, Picnic>();
         public SDictionary<int, Vegetable> _exotics = new SDictionary<int, Vegetable>();
         public SDictionary<int, Product> _oils = new SDictionary<int, Product>();
+        public SDictionary<int, Wood> _seedlings = new SDictionary<int, Wood>();
+        public SDictionary<int, Wood> _woods = new SDictionary<int, Wood>();
+        public SDictionary<int, Wood> _timbers = new SDictionary<int, Wood>();
+        public SDictionary<int, Wood> _woodenProducts = new SDictionary<int, Wood>();
 
 
 
@@ -45,6 +49,14 @@ namespace WFManager {
                 foreach (var prod in instance._exotics)
                     products.Add(prod.Key, prod.Value);
                 foreach (var prod in instance._oils)
+                    products.Add(prod.Key, prod.Value);
+                foreach (var prod in instance._seedlings)
+                    products.Add(prod.Key, prod.Value);
+                foreach (var prod in instance._woods)
+                    products.Add(prod.Key, prod.Value);
+                foreach (var prod in instance._timbers)
+                    products.Add(prod.Key, prod.Value);
+                foreach (var prod in instance._woodenProducts)
                     products.Add(prod.Key, prod.Value);
                 return products;
             }
@@ -80,6 +92,22 @@ namespace WFManager {
         static public SDictionary<int, Product> Oils {
             get { return instance._oils; }
             set { instance._oils = value; }
+        }
+        static public SDictionary<int, Wood> Seedlings {
+            get { return instance._seedlings; }
+            set { instance._seedlings = value; }
+        }
+        static public SDictionary<int, Wood> Woods {
+            get { return instance._woods; }
+            set { instance._woods = value; }
+        }
+        static public SDictionary<int, Wood> Timbers {
+            get { return instance._timbers; }
+            set { instance._timbers = value; }
+        }
+        static public SDictionary<int, Wood> WoodenProducts {
+            get { return instance._woodenProducts; }
+            set { instance._woodenProducts = value; }
         }
 
 
@@ -118,6 +146,22 @@ namespace WFManager {
 
         static public List<Product> AvailableOils {
             get { return Oils.Values.Where(o => o.IsAvailable).ToList(); }
+        }
+
+        static public List<Wood> AvailableSeedlings {
+            get { return Seedlings.Values.Where(w => w.IsAvailable).ToList(); }
+        }
+
+        static public List<Wood> AvailableWoods {
+            get { return Woods.Values.Where(w => w.IsAvailable).ToList(); }
+        }
+
+        static public List<Wood> AvailableTimbers {
+            get { return Timbers.Values.Where(w => w.IsAvailable).ToList(); }
+        }
+
+        static public List<Wood> AvailableWoodenProducts {
+            get { return WoodenProducts.Values.Where(w => w.IsAvailable).ToList(); }
         }
 
 

@@ -13,15 +13,15 @@ namespace WFManager {
 
         public static List<HelpTableRow> getRows() {
             HtmlElement helpContent = Browser.GetElementById("newhelp_content");
-            var table = Browser.GetChildrenByClass(helpContent, "newhelp_table", "table").Last();
+            var table = Browser.GetChildrenByClass(helpContent, "newhelp_table").Last();
 
             var cols = new List<string>();
-            var headers = Browser.getOffspringByClass(table, "newhelp_table_head", "td")[0].Children;
+            var headers = Browser.getOffspringByClass(table, "newhelp_table_head")[0].Children;
             for (int i = 0; i < headers.Count; i++)
                 cols.Add(headers[i].InnerText);
 
             var result = new List<HelpTableRow>();
-            var rows = Browser.getOffspringByClass(table, "newhelp_line", "td");
+            var rows = Browser.getOffspringByClass(table, "newhelp_line");
             for (int r = 0; r < rows.Count; r++) {
                 var ptr = new HelpTableRow();
                 for (int c = 0; c < cols.Count; c++) 
@@ -34,11 +34,7 @@ namespace WFManager {
         
         public int ID {
             get {
-                int id = int.Parse(cells["Produkt"].Children[0].GetAttribute("className")
-                        .Split(new string[] { "kp" }, StringSplitOptions.None)[1].Split(' ')[0]);
-                if (id == 0)
-                    id = -1;
-                return id;
+                return Util.ParseProductId(cells["Produkt"].Children[0].GetAttribute("className"));
             }
         }
 
@@ -48,22 +44,34 @@ namespace WFManager {
 
         public TimeSpan GrowthTime {
             get {
-                var time = Regex.Replace(cells["Czas"].InnerText, "[^0-9:]", "").Split(':');
-                return new TimeSpan(int.Parse(time[0]), int.Parse(time[1]), int.Parse(time[2]));
+                try {
+                    return Util.ParseTimeSpan(cells["Czas"].InnerText);
+                } catch (Exception) {
+                    return TimeSpan.MaxValue;
+                }
             }
         }
 
-        public int HarvestPerUnit {
-            get { return int.Parse(cells["Zbiór"].InnerText); }
+        public int HarvestPerIndividual {
+            get {
+                if (cells.ContainsKey("Zbiór")) {
+                    var match = Regex.Match(cells["Zbiór"].InnerText, "[0-9]+");
+                    if (match.Success)
+                        return int.Parse(match.Value);
+                }
+                return 1;
+            }
         }
 
         public int BonusPoints {
             get {
-                string bonus = cells["Punkty"].InnerText.Replace(".", "").Trim();
-                if (bonus.Any())
-                    return int.Parse(bonus);
-                else
-                    return 0;
+                if (cells.ContainsKey("Punkty")) {
+                    var match = Regex.Match(cells["Punkty"].InnerText, "[0-9]+(.[0-9]+)?");
+                    if (match.Success) {
+                        return int.Parse(match.Value.Replace(".", ""));
+                    }
+                }
+                return 0;
             }
         }
 
@@ -79,6 +87,9 @@ namespace WFManager {
 
         public int Size {
             get {
+                if (!cells.ContainsKey("Pola"))
+                    return 0;
+
                 var sizeStr = cells["Pola"].InnerText.Trim();
                 return sizeStr == "1x1" ? 1 : (sizeStr == "2x2" ? 4 : 2);
             }
@@ -87,13 +98,19 @@ namespace WFManager {
         public List<Ingredient> Ingredients {
             get {
                 var ingredients = new List<Ingredient>();
+                if (!cells.ContainsKey("Potrzebne"))
+                    return ingredients;
+
                 var ingRows = cells["Potrzebne"].Children;
                 for (int i = 0; i < ingRows.Count; i += 3) {
-                    string id = ingRows[i].GetAttribute("className")
-                            .Split(new string[] { "kp" }, StringSplitOptions.None)[1]
-                            .Split(' ')[0];
-                    string count = ingRows[i + 1].InnerText.Split('x').First();
-                    ingredients.Add(new Ingredient(int.Parse(id), int.Parse(count)));
+                    int id = Util.ParseProductId(Browser.GetClassName(ingRows[i]));
+
+                    int count = 1;
+                    var match = Regex.Match(ingRows[i + 1].InnerText, "[0-9]+x");
+                    if (match.Success)
+                        count = int.Parse(match.Value.Replace("x", ""));
+
+                    ingredients.Add(new Ingredient(id, count));
                 }
                 return ingredients;
             }

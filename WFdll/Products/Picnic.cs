@@ -7,23 +7,7 @@ namespace WFManager {
         public Picnic() { }
         public Picnic(int id) : base(id) { }
 
-
-        public List<Ingredient> Ingredients;
-
-
-
-
-        /// <exception cref="AvailabilityException"></exception>
-        public double ProductionCost {
-            get { return Ingredients.Select(i => i.Cost).Sum(); }
-        }
-
-        /// <exception cref="AvailabilityException"></exception>
-        public double LastProductionCost {
-            get { return Ingredients.Select(i => i.LastCost).Sum(); }
-        }
-
-
+        
 
         
         public override double? DailyIncomePerUnit(double? givenPrice) {

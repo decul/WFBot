@@ -36,12 +36,15 @@ namespace WFManager {
             SetBrowserFeatureControlKey("FEATURE_TABBED_BROWSING", fileName, 1);
             SetBrowserFeatureControlKey("FEATURE_VALIDATE_NAVIGATE_URL", fileName, 1);
             SetBrowserFeatureControlKey("FEATURE_WEBOC_DOCUMENT_ZOOM", fileName, 1);
-            SetBrowserFeatureControlKey("FEATURE_WEBOC_POPUPMANAGEMENT", fileName, 0);
             SetBrowserFeatureControlKey("FEATURE_WEBOC_MOVESIZECHILD", fileName, 1);
             SetBrowserFeatureControlKey("FEATURE_ADDON_MANAGEMENT", fileName, 0);
             SetBrowserFeatureControlKey("FEATURE_WEBSOCKET", fileName, 1);
             SetBrowserFeatureControlKey("FEATURE_WINDOW_RESTRICTIONS ", fileName, 0);
             SetBrowserFeatureControlKey("FEATURE_XMLHTTP", fileName, 1);
+
+            // Block popups
+            SetBrowserFeatureControlKey("FEATURE_BLOCK_INPUT_PROMPTS", fileName, 1);    
+            SetBrowserFeatureControlKey("FEATURE_WEBOC_POPUPMANAGEMENT", fileName, 1);  
         }
 
         private static void SetBrowserFeatureControlKey(string feature, string appName, uint value) {

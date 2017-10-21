@@ -21,15 +21,17 @@ namespace WFManager {
         }
 
         public static int ParseProductId(string idString) {
-            var match = Regex.Match(idString, "kp[0-9]+");
-            if (match.Success)
-                return int.Parse(match.Value.Substring(2));
+            int prefix = 0;
 
-            match = Regex.Match(idString, "f_m_symbol[0-9]+");
-            if (match.Success)
-                return 10000 + int.Parse(match.Value.Substring(10));
+            var match = Regex.Match(idString, "(kp|e)[0-9]+");
+            if (!match.Success) {
+                prefix = 10000;
+                match = Regex.Match(idString, "f_(m_)?symbol[0-9]+");
+                if (!match.Success)
+                    throw new ArgumentException("String does not contain valid product id");
+            }
 
-            throw new ArgumentException("String does not contain valid product id");
+             return prefix + int.Parse(Regex.Match(match.Value, "[0-9]+").Value);
         }
 
 

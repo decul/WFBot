@@ -1,7 +1,10 @@
-﻿using System;
+﻿using mshtml;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,32 +36,47 @@ namespace WFManager {
             return Document.GetElementById(id);
         }
 
-        public static List<HtmlElement> GetElementsByClass(string className, string tagName = null) {
-            return getByClass(Document.Body, className, tagName, false);
+        public static List<HtmlElement> GetElementsByClass(string className, string ancestorId = null) {
+            var ancestor = Document.Body;
+            if (ancestorId != null)
+                ancestor = GetElementById(ancestorId);
+            return getOffspringByClass(ancestor, className, false);
         }
 
-        public static List<HtmlElement> getOffspringByClass(HtmlElement element, string className, string tagName = null) {
-            return getByClass(element, className, tagName, false);
+        public static List<HtmlElement> getOffspringByClass(HtmlElement element, string className) {
+            return getOffspringByClass(element, className, false);
         }
 
-        public static List<HtmlElement> GetChildrenByClass(HtmlElement element, string className, string tagName = null) {
-            return getByClass(element, className, tagName, true);
+        public static List<HtmlElement> GetChildrenByClass(HtmlElement element, string className) {
+            return getOffspringByClass(element, className, true);
         }
 
-        public static List<HtmlElement> GetSiblingsByClass(HtmlElement element, string className, string tagName = null) {
-            return getByClass(element.Parent, className, tagName, true);
+        public static List<HtmlElement> GetSiblingsByClass(HtmlElement element, string className) {
+            return getOffspringByClass(element.Parent, className, true);
         }
 
-        private static List<HtmlElement> getByClass(HtmlElement parent, string className, string tagName, bool childrenOnly) {
+        private static List<HtmlElement> getOffspringByClass(HtmlElement parent, string className, bool childrenOnly) {
             HtmlElementCollection elements = parent.All;
             if (childrenOnly)
                 elements = parent.Children;
-            if (tagName != null)
-                elements.GetElementsByName(tagName);
 
             List<HtmlElement> result = new List<HtmlElement>();
             foreach (HtmlElement element in elements) {
                 if (element.GetAttribute("className").Split(' ').Contains(className))
+                    result.Add(element);
+            }
+            return result;
+        }
+
+        public static List<HtmlElement> GetElementsByIdLike(string idRegEx, string ancestorId = null) {
+            var ancestor = Document.Body;
+            if (ancestorId != null)
+                ancestor = GetElementById(ancestorId);
+            var elements = ancestor.All;
+
+            List<HtmlElement> result = new List<HtmlElement>();
+            foreach (HtmlElement element in elements) {
+                if (element.Id != null && Regex.IsMatch(element.Id, idRegEx))
                     result.Add(element);
             }
             return result;
@@ -119,15 +137,7 @@ namespace WFManager {
         public static void Click(string elementId, string offspringClassName = null) {
             InvokeMember("click", elementId, offspringClassName);
         }
-
-        public static void MouseOver(string elementId, string offspringClassName = null) {
-            InvokeMember("mouseover", elementId, offspringClassName);
-        }
-
-        public static void MouseOut(string elementId, string offspringClassName = null) {
-            InvokeMember("mouseout", elementId, offspringClassName);
-        }
-
+        
         public static bool TryClick(string elementId, string offspringClassName = null) {
             try {
                 Click(elementId, offspringClassName);
@@ -155,7 +165,7 @@ namespace WFManager {
 
         public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 60000) {
             if (!TryWaitForId(id, timeout, postWaitTime))
-                throw new Exception("Wait for ID Timeout (" + id + ")");
+                throw new Exception("Wait for ID Timeout (#" + id + ")");
         }
 
         public static bool TryWaitForId(string id, int timeout = 60000, int postWaitTime = 2000) {
@@ -166,13 +176,18 @@ namespace WFManager {
             return WaitFor(predicate, postWaitTime, timeout);
         }
 
-        public static void WaitForClass(string className, string tagName = null, int waitTime = 2000) {
+        public static void WaitForClass(string className, string ancestorId = null, int waitTime = 2000) {
             Func<bool> predicate = () => {
-                var elements = GetElementsByClass(className, tagName);
+                var elements = GetElementsByClass(className, ancestorId);
                 return elements.Any() && isAnyVisible(elements);
             };
-            if (!WaitFor(predicate, waitTime))
-                throw new Exception("Wait for class Timeout (" + className + ")");
+            if (!WaitFor(predicate, waitTime)) {
+                string selector = "." + className;
+                if (ancestorId != null)
+                    selector = "#" + ancestorId + " " + selector;
+
+                throw new Exception("Wait for class Timeout (" + selector + ")");
+            }
         }
 
         public static void WaitForBus() {
@@ -224,6 +239,29 @@ namespace WFManager {
                 Application.DoEvents();
                 Thread.Sleep(10);
             }
+        }
+
+
+
+        public static void RemoveElementById(string elementId) {
+            var ad = Document.GetElementById(elementId);
+            if (ad != null)
+                ad.OuterHtml = "";
+        }
+
+
+
+        public static void MoveCursorToElement(string elementId) {
+            MoveCursorToElement(Document.GetElementById(elementId));
+        }
+
+        public static void MoveCursorToElement(HtmlElement element) {
+            IHTMLRect rect = ((IHTMLElement2)element.DomElement).getBoundingClientRect();
+            Size size = element.ClientRectangle.Size;
+            Point point = b.Parent.PointToScreen(b.Location);
+            point.Offset(rect.left, rect.top);
+            point.Offset(size.Width / 2, size.Height / 2);
+            Cursor.Position = point;
         }
 
 

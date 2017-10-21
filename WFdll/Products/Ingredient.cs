@@ -41,5 +41,11 @@ namespace WFManager {
             get { return Product.LastBuyPrice * Quantity; }
         }
 
+
+
+        public bool isEnaughAvailable {
+            get { return Product.Quantity >= Quantity; }
+        }
+
     }
 }

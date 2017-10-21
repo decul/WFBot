@@ -19,31 +19,59 @@ namespace WFManager {
         public int ID;
         public string Name;
 
-        [XmlIgnore]
-        public TimeSpan GrowthTime;
+        public int GrowthTimeSec;
         public int HarvestFromIndividual;
         public int BonusPointsPerSquare;
-        
+
+        public List<Ingredient> Ingredients = new List<Ingredient>();
+
         public double BasePrice;
 
         [XmlElement("PriceRecord")]
         public List<PriceRecord> PriceHistory = new List<PriceRecord>();
 
+        [XmlIgnore]
+        public int Quantity;
+        
 
 
-        // Used only for serialization
-        [XmlElement("GrowthTime")]
-        public long GrowthTimeTicks {
-            get { return GrowthTime.Ticks; }
-            set { GrowthTime = new TimeSpan(value); }
+        [XmlIgnore]
+        public TimeSpan GrowthTime {
+            get { return TimeSpan.FromSeconds(GrowthTimeSec); }
+            set { GrowthTimeSec = (int) value.TotalSeconds; }
         }
 
+
+
         
-        public bool IsAvailable {
+        public virtual bool IsAvailable {
             get { return PriceHistory.Any(); }
         }
 
+        public bool EnaughIngredients {
+            get {
+                foreach (var ingredient in Ingredients) {
+                    if (!ingredient.isEnaughAvailable)
+                        return false;
+                }
+                return true;
+            }
+        }
 
+        
+
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double ProductionCost {
+            get { return Ingredients.Select(i => i.Cost).Sum(); }
+        }
+
+        /// <exception cref="AvailabilityException"></exception>
+        public double LastProductionCost {
+            get { return Ingredients.Select(i => i.LastCost).Sum(); }
+        }
+
+         
 
 
         //public double? AvgPriceDay() {
