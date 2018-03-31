@@ -63,43 +63,43 @@ namespace WFManager {
                 Browser.Wait(1000);
             }
 
-            for (int f = 0; f < fieldsCount; f++) {
-                // Go to Field
-                var field = Browser.GetElementsByClass("bm1")[f];
-                Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
-                Browser.WaitForId("cropall");
+            //for (int f = 0; f < fieldsCount; f++) {
+            //    // Go to Field
+            //    var field = Browser.GetElementsByClass("bm1")[f];
+            //    Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
+            //    Browser.WaitForId("cropall");
 
-                // Water field
-                if (Browser.GetElementById("waterall").GetAttribute("className").Split(' ').Contains("waterall")) {
-                    Browser.Click("waterall");
-                    Browser.Wait(1000);
-                } else {
-                    Browser.Click("giessen");
-                    Browser.Wait(1000);
+            //    // Water field
+            //    if (Browser.GetElementById("waterall").GetAttribute("className").Split(' ').Contains("waterall")) {
+            //        Browser.Click("waterall");
+            //        Browser.Wait(1000);
+            //    } else {
+            //        Browser.Click("giessen");
+            //        Browser.Wait(1000);
 
-                    var square = Browser.GetElementById("f1");
-                    Browser.MoveCursorToElement(square);
-                    Browser.WaitFor(() => square.InnerHtml.Contains("http://mff.wavecdn.de/mff/cursors/"));
+            //        var square = Browser.GetElementById("f1");
+            //        Browser.MoveCursorToElement(square);
+            //        Browser.WaitFor(() => square.InnerHtml.Contains("http://mff.wavecdn.de/mff/cursors/"));
 
-                    tryToClickAllSquares(vegetable.Size, canBeWatered);
-                }
+            //        tryToClickAllSquares(vegetable.Size, canBeWatered);
+            //    }
 
-                Browser.Document.InvokeScript("parent.show_built", new object[] { 120, "out" });
-                if (Browser.TryWaitForId("gtt_zeit", 1000)) {
-                    var time = Util.ParseTimeSpan(Browser.GetElementById("gtt_zeit").InnerText);
-                    if (timeToHarvest < time)
-                        timeToHarvest = time;
-                }
+            //    Browser.Document.InvokeScript("parent.show_built", new object[] { 120, "out" });
+            //    if (Browser.TryWaitForId("gtt_zeit", 1000)) {
+            //        var time = Util.ParseTimeSpan(Browser.GetElementById("gtt_zeit").InnerText);
+            //        if (timeToHarvest < time)
+            //            timeToHarvest = time;
+            //    }
 
-                // Close field
-                Browser.Click("gardencancel");
-                Browser.Wait(1000);
-            }
+            //    // Close field
+            //    Browser.Click("gardencancel");
+            //    Browser.Wait(1000);
+            //}
 
             if (timeToHarvest > TimeSpan.Zero)
                 return timeToHarvest;
             else {
-                Logger.Error("Nie można odczytać czasu pozostałego do zbiorów");
+                //Logger.Error("Nie można odczytać czasu pozostałego do zbiorów");
                 return vegetable.GrowthTime;
             }
         }

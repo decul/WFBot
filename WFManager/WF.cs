@@ -212,11 +212,18 @@ namespace WFManager {
             }
         }
 
-        public static void removeAds() {
-            Browser.RemoveElementById("newsbox");
-            Browser.RemoveElementById("globaltransp");
-            Browser.RemoveElementById("bubble_adtext");
-            Browser.RemoveElementById("banner_right");
+        public static void hideAds() {
+            Browser.SetPermanentStyle("newsbox", "display: none");
+            Browser.SetPermanentStyle("globaltransp", "display: none");
+            Browser.SetPermanentStyle("bubble_adtext", "display: none");
+            Browser.SetPermanentStyle("banner_right", "display: none");
+            
+            Browser.SetPermanentStyle("uptoolbar", "display: none");
+            Browser.SetPermanentStyle("main_body", "margin: 0");
+            Browser.GetElementById("main_body").Children[3].Id = "wyjebana_stopa";
+            Browser.SetPermanentStyle("wyjebana_stopa", "display: none");
+            Browser.SetPermanentStyle("game_control", "display: none");
+
         }
         
     }

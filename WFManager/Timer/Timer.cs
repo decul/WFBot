@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace WFManager {
     static public class Timer {
-        static private bool stopped = true;
+        static private bool stopped = false;
 
         static private List<Event> events = new List<Event>();
         
@@ -19,8 +19,6 @@ namespace WFManager {
         }
 
         static public void Run() {
-            stopped = false;
-
             if (events.Find(ev => ev.type == EventType.CROP) == null) 
                 events.Add(new Event(DateTime.Now, EventType.CROP));
 
@@ -47,21 +45,35 @@ namespace WFManager {
 
 
             while (!stopped) {
+                Browser.Wait(1000);
+
                 foreach (var ev in events) {
                     try {
                         if (ev.date <= DateTime.Now) {
                             WF.LogIn();
                             switch (ev.type) {
                                 case EventType.PRICES_UPDATE:
-                                    ElFarmado.UpdatePrices();
-                                    if (ev.date > DateTime.Now - TimeSpan.FromHours(0.5))
-                                        ev.date += TimeSpan.FromHours(1);
-                                    else
-                                        ev.date = DateTime.Now + TimeSpan.FromHours(1);
+                                    if (DateTime.Now.Hour > 19) {
+                                        ElFarmado.UpdatePrices();
+                                        ev.date = DateTime.Now.AddHours(6);
+                                    }
+                                    else {
+                                        ev.date = DateTime.Now.AddMinutes(10);
+                                    }
                                     break;
 
+                                    //ElFarmado.UpdatePrices();
+                                    //if (ev.date > DateTime.Now - TimeSpan.FromHours(0.5))
+                                    //    ev.date += TimeSpan.FromHours(1);
+                                    //else
+                                    //    ev.date = DateTime.Now + TimeSpan.FromHours(1);
+                                    //break;
+
                                 case EventType.CROP:
-                                    ev.date = DateTime.Now + Farm.SowFields(V.Bławatki);
+                                    int productId = V.Bławatki;
+                                    if (DateTime.Now.Hour > 3 && DateTime.Now.Hour < 14)
+                                        productId = V.Słoneczniki;
+                                    ev.date = DateTime.Now + Farm.SowFields(productId);
                                     break;
 
                                 case EventType.FEED_CHICKENS:
@@ -110,7 +122,6 @@ namespace WFManager {
                     if (stopped)
                         break;
                 }
-                Browser.Wait(1000);
             }
         }
 

@@ -14,10 +14,18 @@ using System.Windows.Forms;
 
 namespace WFManager {
     public partial class MainForm : Form {
-        public MainForm() {
+        public MainForm(string[] args) {
             RegistrySetup.SetBrowserFeatureControl();
             InitializeComponent();
 
+            if (!args.Contains("-h"))
+                Show();
+
+            notifyIcon.ContextMenu = new ContextMenu(new MenuItem[] {
+                new MenuItem("Exit", (o, e) => Application.Exit()),
+                new MenuItem("Safe Exit", (o, e) => Timer.Stop())
+            });
+            
             Browser.Initialize(webBrowser);
             Store.Load(WF.storagePath);
             NpcHistory.Load(WF.storagePath);
@@ -25,17 +33,11 @@ namespace WFManager {
             Logger.Initialize(infoLabel);
             HttpServer.StartListenning();
 
-            versionLabel.Text = Util.AssemblyDate.ToString();
-        }
-
-        private void startButton_Click(object sender, EventArgs e) {
-            startButton.Enabled = false;
-
-            Logger.Label("Hello");
-            WF.LogIn("owczy_farmer", "farmernia", 10);
-            WF.removeAds();
-
-            stopButton.Enabled = true;
+            try {
+                Logger.Label("Hello");
+                WF.LogIn("owczy_farmer", "farmernia", 10);
+                WF.hideAds();
+            } catch (ObjectDisposedException) { }
 
             if (!Store.Seedlings.Any())
                 WF.UpdateProductsInfo();
@@ -43,9 +45,20 @@ namespace WFManager {
             Timer.Run();
             Application.Exit();
         }
-
-        private void stopButton_Click(object sender, EventArgs e) {
-            Timer.Stop();
+        
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e) {
+            Show();
+            Activate();
+        }
+        
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                Hide();
+                notifyIcon.ShowBalloonTip(1000, "WF Manager", "WF Manager is still running in backgroung", ToolTipIcon.Info);
+            } else {
+                Timer.Stop();
+            }
         }
     }
 }

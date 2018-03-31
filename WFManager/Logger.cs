@@ -60,10 +60,10 @@ namespace WFManager {
                 errorLogFile.WriteLine(DateTime.Now.ToString("\n[dd/MM/yyyy HH:mm:ss]") + "\t" + s, args);
                 errorLogFile.Flush();
 
-                alert(s);
+                //alert(s);
             }
         }
-
+        
         private static void alert(string msg) {
             if (!msgLocked) {
                 msgLocked = true;

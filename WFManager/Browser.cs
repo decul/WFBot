@@ -248,6 +248,17 @@ namespace WFManager {
             if (ad != null)
                 ad.OuterHtml = "";
         }
+        
+        public static void SetPermanentStyle(string elementId, string style) {
+            string stylesId = "wf_manager_styles";
+            var styles = Document.GetElementById(stylesId);
+            if (styles == null) {
+                styles = Document.CreateElement("style");
+                styles.Id = stylesId;
+                Document.Body.AppendChild(styles);
+            }
+            styles.InnerHtml += "#" + elementId + " { " + style + " !important; } ";
+        }
 
 
 

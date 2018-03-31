@@ -6,7 +6,7 @@ using System.Net;
 
 namespace WFManager {
     class HttpClient {
-        private const string url = "http://192.168.1.88:80/Temporary_Listen_Addresses/WFManager/";
+        private const string url = "http://localhost:80/Temporary_Listen_Addresses/WFManager/";
 
         //public static List<Vegetable> AvailableVegetables {
         //    get {
