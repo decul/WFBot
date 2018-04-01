@@ -54,8 +54,7 @@ namespace WFManager {
                 }
 
                 // Sow
-                Browser.Click("rackitem" + productId);
-                Browser.Wait(1000);
+                selectProductFromShelf(productId);
                 tryToClickAllSquares(vegetable.Size, canBeSown);
                 
                 // Close field
@@ -102,6 +101,11 @@ namespace WFManager {
                 //Logger.Error("Nie można odczytać czasu pozostałego do zbiorów");
                 return vegetable.GrowthTime;
             }
+        }
+
+        public static void selectProductFromShelf(int productId) {
+            Browser.InvokeScript("selectRackItem", productId.ToString());
+            Browser.WaitFor(() => Browser.GetClassName("lager_pic") == "l" + productId);
         }
 
         private static bool canBeSown(HtmlElement square) {

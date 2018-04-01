@@ -160,15 +160,23 @@ namespace WFManager {
             Document.InvokeScript(functionName);
         }
 
+        public static void InvokeScript(string functionName, string arg) {
+            Document.InvokeScript(functionName, new string[] { arg });
+        }
+
+        public static void InvokeScript(string functionName, string[] args) {
+            Document.InvokeScript(functionName, args);
+        }
 
 
 
-        public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 60000) {
+
+        public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 30000) {
             if (!TryWaitForId(id, timeout, postWaitTime))
                 throw new Exception("Wait for ID Timeout (#" + id + ")");
         }
 
-        public static bool TryWaitForId(string id, int timeout = 60000, int postWaitTime = 2000) {
+        public static bool TryWaitForId(string id, int timeout = 30000, int postWaitTime = 2000) {
             Func<bool> predicate = () => {
                 var element = Document.GetElementById(id);
                 return element != null && isVisible(element);
@@ -225,7 +233,7 @@ namespace WFManager {
             }
         }
 
-        public static bool WaitFor(Func<bool> predicate, long postWaitTime = 1000, long timeout = 60000) {
+        public static bool WaitFor(Func<bool> predicate, long postWaitTime = 1000, long timeout = 30000) {
             var start = DateTime.Now;
             while (true) {
                 if (predicate()) {

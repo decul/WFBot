@@ -43,7 +43,7 @@ namespace WFManager {
             if (events.Find(ev => ev.type == EventType.CUT_WOOD) == null)
                 events.Add(new Event(DateTime.Now, EventType.CUT_WOOD));
 
-
+            
             while (!stopped) {
                 Browser.Wait(1000);
 
@@ -72,7 +72,7 @@ namespace WFManager {
                                 case EventType.CROP:
                                     int productId = V.Bławatki;
                                     if (DateTime.Now.Hour > 3 && DateTime.Now.Hour < 14)
-                                        productId = V.Słoneczniki;
+                                        productId = V.Cebule;
                                     ev.date = DateTime.Now + Farm.SowFields(productId);
                                     break;
 

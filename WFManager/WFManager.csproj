@@ -77,13 +77,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Browser.cs" />
+    <Compile Include="ColorScale.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="HttpClient.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="NPCs\Npc.cs" />
+    <Compile Include="NPCs\NpcHistory.cs" />
+    <Compile Include="NPCs\PicnicNpc.cs" />
+    <Compile Include="NPCs\WoodNpc.cs" />
     <Compile Include="Places\ElFarmado.cs" />
     <Compile Include="Places\ElFishado.cs" />
     <Compile Include="Places\ElWoodo.cs" />
     <Compile Include="Places\Farm.cs" />
     <Compile Include="HelpTableRow.cs" />
+    <Compile Include="Products\D.cs" />
+    <Compile Include="Products\Diary.cs" />
+    <Compile Include="Products\Ingredient.cs" />
+    <Compile Include="Products\Picnic.cs" />
+    <Compile Include="Products\PriceRecord.cs" />
+    <Compile Include="Products\Product.cs" />
+    <Compile Include="Products\Store.cs" />
+    <Compile Include="Products\V.cs" />
+    <Compile Include="Products\Vegetable.cs" />
+    <Compile Include="Products\Wood.cs" />
+    <Compile Include="SDictionary.cs" />
+    <Compile Include="Serializer.cs" />
     <Compile Include="Timer\Event.cs" />
     <Compile Include="Timer\EventType.cs" />
     <Compile Include="MainForm.cs">
@@ -123,12 +142,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WFdll\WFdll.csproj">
-      <Project>{bbc12379-3716-4afd-972e-60b0c128bd32}</Project>
-      <Name>WFdll</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
