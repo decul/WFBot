@@ -16,35 +16,47 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace WFManager {
     public partial class MainForm : Form {
         public MainForm(string[] args) {
-            RegistrySetup.SetBrowserFeatureControl();
-            InitializeComponent();
-
-            if (!args.Contains("-h"))
-                Show();
-
-            notifyIcon.ContextMenu = new ContextMenu(new MenuItem[] {
-                new MenuItem("Exit", (o, e) => Application.Exit()),
-                new MenuItem("Safe Exit", (o, e) => Timer.Stop())
-            });
-            
-            Browser.Initialize(webBrowser);
-            Store.Load(WF.storagePath);
-            NpcHistory.Load(WF.storagePath);
-            Timer.DeserializeEvents();
-            Logger.Initialize(infoLabel);
-            HttpServer.StartListenning();
-
             try {
-                Logger.Label("Hello");
-                WF.LogIn("owczy_farmer", "farmernia", 10);
-                WF.hideAds();
-            } catch (ObjectDisposedException) { }
+                RegistrySetup.SetBrowserFeatureControl();
+                InitializeComponent();
 
-            if (!Store.Seedlings.Any())
-                WF.UpdateProductsInfo();
+                if (!args.Contains("-h"))
+                    Show();
 
-            GraphInit();
-            Timer.Run();
+                notifyIcon.ContextMenu = new ContextMenu(new MenuItem[] {
+                    new MenuItem("Exit", (o, e) => Application.Exit()),
+                    new MenuItem("Safe Exit", (o, e) => Timer.Stop())
+                });
+
+                Browser.Initialize(webBrowser);
+                Store.Load(WF.storagePath);
+                NpcHistory.Load(WF.storagePath);
+                Timer.DeserializeEvents();
+                Logger.Initialize(infoLabel);
+                GraphInit();
+                //HttpServer.StartListenning();
+
+                while (true) {
+                    try {
+                        Logger.Label("hello");
+                        WF.LogIn("owczy_farmer", "farmernia", 10);
+                        WF.hideAds();
+                        break;
+                    } catch (ObjectDisposedException) {
+                        break;
+                    } catch (Exception) {
+                        Browser.Wait(10000);
+                    }
+                }
+
+                if (!Store.Seedlings.ContainsKey(10010))
+                    WF.UpdateProductsInfo();
+
+                Timer.Run();
+            }
+            catch (Exception e) {
+                Logger.Error(e);
+            }
             Application.Exit();
         }
         

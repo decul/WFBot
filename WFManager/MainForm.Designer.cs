@@ -32,6 +32,7 @@
             this.infoLabel = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.BotPage = new System.Windows.Forms.TabPage();
             this.ChartPage = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.typeComboBoxLel = new System.Windows.Forms.ComboBox();
@@ -44,9 +45,9 @@
             this.IncomeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BonusColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BotPage = new System.Windows.Forms.TabPage();
             this.categoryComboBox = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
+            this.BotPage.SuspendLayout();
             this.ChartPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -58,17 +59,16 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridView)).BeginInit();
-            this.BotPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // webBrowser
             // 
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScriptErrorsSuppressed = true;
-            this.webBrowser.Size = new System.Drawing.Size(1067, 590);
+            this.webBrowser.Size = new System.Drawing.Size(1073, 596);
             this.webBrowser.TabIndex = 0;
             // 
             // infoLabel
@@ -95,17 +95,28 @@
             this.tabControl1.Controls.Add(this.TablePage);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1081, 622);
             this.tabControl1.TabIndex = 1;
+            // 
+            // BotPage
+            // 
+            this.BotPage.Controls.Add(this.webBrowser);
+            this.BotPage.Location = new System.Drawing.Point(4, 22);
+            this.BotPage.Margin = new System.Windows.Forms.Padding(0);
+            this.BotPage.Name = "BotPage";
+            this.BotPage.Size = new System.Drawing.Size(1073, 596);
+            this.BotPage.TabIndex = 2;
+            this.BotPage.Text = "Bot";
+            this.BotPage.UseVisualStyleBackColor = true;
             // 
             // ChartPage
             // 
             this.ChartPage.Controls.Add(this.splitContainer1);
             this.ChartPage.Location = new System.Drawing.Point(4, 22);
             this.ChartPage.Name = "ChartPage";
-            this.ChartPage.Padding = new System.Windows.Forms.Padding(3);
             this.ChartPage.Size = new System.Drawing.Size(1073, 596);
             this.ChartPage.TabIndex = 0;
             this.ChartPage.Text = "Wykres";
@@ -116,7 +127,7 @@
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -127,7 +138,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.chart);
-            this.splitContainer1.Size = new System.Drawing.Size(1067, 590);
+            this.splitContainer1.Size = new System.Drawing.Size(1073, 596);
             this.splitContainer1.SplitterDistance = 25;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -135,10 +146,11 @@
             // 
             this.typeComboBoxLel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.typeComboBoxLel.FormattingEnabled = true;
-            this.typeComboBoxLel.Location = new System.Drawing.Point(943, 2);
+            this.typeComboBoxLel.Location = new System.Drawing.Point(949, 2);
             this.typeComboBoxLel.Name = "typeComboBoxLel";
             this.typeComboBoxLel.Size = new System.Drawing.Size(121, 21);
             this.typeComboBoxLel.TabIndex = 1;
+            this.typeComboBoxLel.SelectedIndexChanged += new System.EventHandler(this.refreshStats);
             // 
             // chart
             // 
@@ -161,7 +173,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart.Series.Add(series1);
-            this.chart.Size = new System.Drawing.Size(1067, 561);
+            this.chart.Size = new System.Drawing.Size(1073, 567);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
             // 
@@ -170,7 +182,6 @@
             this.TablePage.Controls.Add(this.splitContainer2);
             this.TablePage.Location = new System.Drawing.Point(4, 22);
             this.TablePage.Name = "TablePage";
-            this.TablePage.Padding = new System.Windows.Forms.Padding(3);
             this.TablePage.Size = new System.Drawing.Size(1073, 596);
             this.TablePage.TabIndex = 1;
             this.TablePage.Text = "Tabela";
@@ -179,14 +190,14 @@
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.GridView);
-            this.splitContainer2.Size = new System.Drawing.Size(1067, 590);
+            this.splitContainer2.Size = new System.Drawing.Size(1073, 596);
             this.splitContainer2.SplitterDistance = 25;
             this.splitContainer2.TabIndex = 1;
             // 
@@ -207,7 +218,7 @@
             this.GridView.Name = "GridView";
             this.GridView.ReadOnly = true;
             this.GridView.RowHeadersVisible = false;
-            this.GridView.Size = new System.Drawing.Size(1067, 561);
+            this.GridView.Size = new System.Drawing.Size(1073, 567);
             this.GridView.TabIndex = 0;
             // 
             // NameColumn
@@ -241,17 +252,6 @@
             this.TimeColumn.Name = "TimeColumn";
             this.TimeColumn.ReadOnly = true;
             // 
-            // BotPage
-            // 
-            this.BotPage.Controls.Add(this.webBrowser);
-            this.BotPage.Location = new System.Drawing.Point(4, 22);
-            this.BotPage.Name = "BotPage";
-            this.BotPage.Padding = new System.Windows.Forms.Padding(3);
-            this.BotPage.Size = new System.Drawing.Size(1073, 596);
-            this.BotPage.TabIndex = 2;
-            this.BotPage.Text = "Bot";
-            this.BotPage.UseVisualStyleBackColor = true;
-            // 
             // categoryComboBox
             // 
             this.categoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -275,6 +275,7 @@
             this.Text = "WF Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.tabControl1.ResumeLayout(false);
+            this.BotPage.ResumeLayout(false);
             this.ChartPage.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -286,7 +287,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GridView)).EndInit();
-            this.BotPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

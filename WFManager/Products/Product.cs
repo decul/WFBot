@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace WFManager {
 
     [Serializable]
-    public class Product {
+    public class Product : IEquatable<Product> {
         public Product() { }
         public Product(int id) {
             ID = id;
@@ -181,5 +181,8 @@ namespace WFManager {
             PriceHistory.Add(new PriceRecord(DateTime.Now, price));
         }
 
+        public bool Equals(Product other) {
+            return ID == other.ID;
+        }
     }
 }

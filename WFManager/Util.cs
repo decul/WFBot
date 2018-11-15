@@ -16,8 +16,12 @@ namespace WFManager {
 
 
         public static double ParsePrice(string priceString) {
-            string price = Regex.Match(priceString, "[0-9,]+").Value.Replace(',', '.');
+            string price = Regex.Match(priceString, "[0-9]+(\\.[0-9]+)*(,[0-9]+)?").Value.Replace(".", "").Replace(',', '.');
             return double.Parse(price, NumberStyles.Any, CultureInfo.InvariantCulture);
+        }
+
+        public static int ParseQty(string qtyString) {
+            return int.Parse(Regex.Match(qtyString, "[0-9]+(\\.[0-9]+)*").Value.Replace(".", ""));
         }
 
         public static int ParseProductId(string idString) {

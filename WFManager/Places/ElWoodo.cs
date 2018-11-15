@@ -39,6 +39,7 @@ namespace WFManager {
             }
             waitForAllTreesToHarvest();
 
+            Browser.WaitForId("forestry_stock1");
             updateSeedlingsQuantity();
             updateWoodQuantity();
 
@@ -83,19 +84,19 @@ namespace WFManager {
             return Browser.GetChildrenByClass(square, "forestry_pos_block")[0].Style.Contains("display: none");
         }
 
-        private static void waitForAllTreesToHarvest(int postWaitTime = 1000) {
+        private static void waitForAllTreesToHarvest() {
             Func<bool> predicate = () => {
                 return !Browser.GetElementsByClass("forestry_pos").Where(s => canBeHarvested(s)).Any();
             };
-            if (!Browser.WaitFor(predicate, postWaitTime, 10000))
+            if (!Browser.WaitFor(predicate))
                 throw new QuietException("Not all trees were harvested");
         }
 
-        private static void waitForAllTreesToPlant(int postWaitTime = 1000) {
+        private static void waitForAllTreesToPlant() {
             Func<bool> predicate = () => {
                 return !Browser.GetElementsByClass("forestry_pos").Where(s => canBePlanted(s)).Any();
             };
-            Browser.WaitFor(predicate, postWaitTime, 10000);
+            Browser.WaitFor(predicate);
         }
 
         private static TimeSpan maxRemainingTime() {
@@ -162,6 +163,7 @@ namespace WFManager {
             }
             if (selectedTimber == null) {
                 Browser.InvokeScript("closeForestryBuildingInner");
+                Browser.WaitForIdGone("forestry_building_inner_slot_info1");
                 return TimeSpan.FromHours(2);
             }
 
@@ -213,7 +215,7 @@ namespace WFManager {
                 }
 
                 Browser.Click("forestry_farmi_info_button1" + c);
-                Browser.Wait(2000);
+                Browser.Wait();
                 NpcHistory.AddTransaction(npc);
 
                 var list = string.Join(", ", npc.ShoppingList.Select(i => i.Quantity + "x " + i.ProductId));
@@ -246,7 +248,7 @@ namespace WFManager {
 
             // Close timber store
             Browser.Click("globalbox_close");
-            Browser.Wait(1000);
+            Browser.WaitForIdGone("globalbox_content");
         }
 
         private static void updateWoodQuantity() {
@@ -269,7 +271,7 @@ namespace WFManager {
 
             // Close wood store
             Browser.Click("globalbox_close");
-            Browser.Wait(1000);
+            Browser.WaitForIdGone("globalbox_content");
         }
 
         private static void updateSeedlingsQuantity() {

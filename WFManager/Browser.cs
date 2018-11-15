@@ -15,6 +15,10 @@ namespace WFManager {
         public static WebBrowser b;
 
 
+        public const int WAIT_TIME = 700;
+        public const int TIMEOUT = 30000;
+
+
 
         public static HtmlDocument Document {
             get {
@@ -171,12 +175,17 @@ namespace WFManager {
 
 
 
-        public static void WaitForId(string id, int postWaitTime = 2000, int timeout = 30000) {
+        public static void WaitForId(string id, int postWaitTime = WAIT_TIME, int timeout = TIMEOUT) {
             if (!TryWaitForId(id, timeout, postWaitTime))
                 throw new Exception("Wait for ID Timeout (#" + id + ")");
         }
 
-        public static bool TryWaitForId(string id, int timeout = 30000, int postWaitTime = 2000) {
+        public static void WaitForIdGone(string id, int postWaitTime = WAIT_TIME, int timeout = TIMEOUT) {
+            if (!TryWaitForIdGone(id, timeout, postWaitTime))
+                throw new Exception("Wait for ID gone Timeout (#" + id + ")");
+        }
+
+        public static bool TryWaitForId(string id, int timeout = TIMEOUT, int postWaitTime = WAIT_TIME) {
             Func<bool> predicate = () => {
                 var element = Document.GetElementById(id);
                 return element != null && isVisible(element);
@@ -184,12 +193,20 @@ namespace WFManager {
             return WaitFor(predicate, postWaitTime, timeout);
         }
 
-        public static void WaitForClass(string className, string ancestorId = null, int waitTime = 2000) {
+        public static bool TryWaitForIdGone(string id, int timeout = TIMEOUT, int postWaitTime = WAIT_TIME) {
+            Func<bool> predicate = () => {
+                var element = Document.GetElementById(id);
+                return element == null || !isVisible(element);
+            };
+            return WaitFor(predicate, postWaitTime, timeout);
+        }
+
+        public static void WaitForClass(string className, string ancestorId = null, int postWaitTime = WAIT_TIME) {
             Func<bool> predicate = () => {
                 var elements = GetElementsByClass(className, ancestorId);
                 return elements.Any() && isAnyVisible(elements);
             };
-            if (!WaitFor(predicate, waitTime)) {
+            if (!WaitFor(predicate, postWaitTime)) {
                 string selector = "." + className;
                 if (ancestorId != null)
                     selector = "#" + ancestorId + " " + selector;
@@ -198,13 +215,27 @@ namespace WFManager {
             }
         }
 
+        public static void WaitForClassGone(string className, string ancestorId = null, int postWaitTime = WAIT_TIME) {
+            Func<bool> predicate = () => {
+                var elements = GetElementsByClass(className, ancestorId);
+                return !elements.Any() || !isAnyVisible(elements);
+            };
+            if (!WaitFor(predicate, postWaitTime)) {
+                string selector = "." + className;
+                if (ancestorId != null)
+                    selector = "#" + ancestorId + " " + selector;
+
+                throw new Exception("Wait for class gone Timeout (" + selector + ")");
+            }
+        }
+
         public static void WaitForBus() {
-            Wait(1000);
+            Wait(2000);
             Func<bool> predicate = () => {
                 var busBox = GetElementById("travel_box");
                 return busBox == null || !isVisible(busBox) || !busBox.GetAttribute("className").Any();
             };
-            if (!WaitFor(predicate, 0))
+            if (!WaitFor(predicate))
                 throw new Exception("Wait for bus Timeout");
         }
 
@@ -225,7 +256,7 @@ namespace WFManager {
             Application.DoEvents();
         }
 
-        public static void Wait(long waitTime) {
+        public static void Wait(long waitTime = WAIT_TIME) {
             var start = DateTime.Now;
             while ((DateTime.Now - start).TotalMilliseconds < waitTime) {
                 Application.DoEvents();
@@ -233,7 +264,7 @@ namespace WFManager {
             }
         }
 
-        public static bool WaitFor(Func<bool> predicate, long postWaitTime = 1000, long timeout = 30000) {
+        public static bool WaitFor(Func<bool> predicate, long postWaitTime = WAIT_TIME, long timeout = TIMEOUT) {
             var start = DateTime.Now;
             while (true) {
                 if (predicate()) {

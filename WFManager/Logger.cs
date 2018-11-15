@@ -63,6 +63,10 @@ namespace WFManager {
                 //alert(s);
             }
         }
+
+        public static void Error(Exception exc) {
+            Error(exc.ToString());
+        }
         
         private static void alert(string msg) {
             if (!msgLocked) {

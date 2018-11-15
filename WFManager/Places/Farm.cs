@@ -30,36 +30,44 @@ namespace WFManager {
             var vegetable = Store.Vegetables[productId];
             TimeSpan timeToHarvest = TimeSpan.Zero;
 
-            int fieldsCount = Browser.GetElementsByClass("bm1").Count;
-            for (int f = 0; f < fieldsCount; f++) {
-                // Go to Field
-                var field = Browser.GetElementsByClass("bm1")[f];
-                Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
-                Browser.WaitForId("cropall");
-
-                // Harvest ready products
-                if (Browser.GetElementById("cropall").GetAttribute("className").Split(' ').Contains("cropall")) {
-                    Browser.Click("cropall");
-                    Browser.WaitForId("globalbox_button1", 3000);
-
-                    string report = string.Join(", ", Browser.GetElementsByClass("cropall_dialog_product").Select(p => p.InnerText).ToList());
-                    Logger.Info("Zebrano: " + report);
-
-                    Browser.Click("globalbox_button1");
-                    Browser.Wait(500);
-                } else {
-                    Browser.Click("ernten");
-                    Browser.Wait(1000);
-                    tryToClickAllSquares(1, canBeHarvested);
-                }
-
-                // Sow
-                selectProductFromShelf(productId);
-                tryToClickAllSquares(vegetable.Size, canBeSown);
+            for (int zone = 1; zone <= 2; zone++) {
+                Browser.InvokeScript("farmMove", zone.ToString());
                 
-                // Close field
-                Browser.Click("gardencancel");
-                Browser.Wait(1000);
+                int fieldsCount = Browser.GetElementsByClass("bm1", "farm_positions" + zone).Count;
+
+                for (int f = 0; f < fieldsCount; f++) {
+                    // Go to Field
+                    var field = Browser.GetElementsByClass("bm1", "farm_positions" + zone)[f];
+                    Browser.GetSiblingsByClass(field, "farm_pos_click")[0].InvokeMember("click");
+                    Browser.WaitForId("cropall");
+
+                    // Harvest ready products
+                    if (Browser.GetElementById("cropall").GetAttribute("className").Split(' ').Contains("cropall")) {
+                        Browser.Click("cropall");
+                        Browser.WaitForId("globalbox_button1", 3 * Browser.WAIT_TIME);
+
+                        string report = string.Join(", ", Browser.GetElementsByClass("cropall_dialog_product").Select(p => p.InnerText).ToList());
+                        Logger.Info("Zebrano: " + report);
+
+                        Browser.Click("globalbox_button1");
+                        Browser.WaitForIdGone("globalbox_button1");
+                    } else {
+                        Browser.Click("ernten");
+                        Browser.Wait();
+                        tryToClickAllSquares(1, canBeHarvested);
+                    }
+
+                    // Clean junk
+                    cleanFieldFromJunk();
+
+                    // Sow
+                    selectProductFromShelf(productId);
+                    tryToClickAllSquares(vegetable.Size, canBeSown);
+
+                    // Close field
+                    Browser.Click("gardencancel");
+                    Browser.WaitForIdGone("cropall");
+                }
             }
 
             //for (int f = 0; f < fieldsCount; f++) {
@@ -71,10 +79,10 @@ namespace WFManager {
             //    // Water field
             //    if (Browser.GetElementById("waterall").GetAttribute("className").Split(' ').Contains("waterall")) {
             //        Browser.Click("waterall");
-            //        Browser.Wait(1000);
+            //        Browser.Wait();
             //    } else {
             //        Browser.Click("giessen");
-            //        Browser.Wait(1000);
+            //        Browser.Wait();
 
             //        var square = Browser.GetElementById("f1");
             //        Browser.MoveCursorToElement(square);
@@ -92,7 +100,7 @@ namespace WFManager {
 
             //    // Close field
             //    Browser.Click("gardencancel");
-            //    Browser.Wait(1000);
+            //    Browser.Wait();
             //}
 
             if (timeToHarvest > TimeSpan.Zero)
@@ -127,16 +135,20 @@ namespace WFManager {
             if (canBeSown(square))
                 return false;
 
-            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/steine_04.gif"))
-                return false;
-            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/unkraut_04.gif"))
-                return false;
-            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/baumstumpf_04.gif"))
-                return false;
-            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/maulwurf_04.gif"))
-                return false;
+            return !isJunk(square);
+        }
 
-            return true;
+        private static bool isJunk(HtmlElement square) {
+            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/steine_04.gif"))
+                return true;
+            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/unkraut_04.gif"))
+                return true;
+            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/baumstumpf_04.gif"))
+                return true;
+            if (square.Style.Contains("http://mff.wavecdn.de/mff/produkte/maulwurf_04.gif"))
+                return true;
+
+            return false;
         }
         
         private static bool canBeWatered(HtmlElement square) {
@@ -163,10 +175,22 @@ namespace WFManager {
                     }
                 }
                 Func<bool> successAssertion = () => Browser.GetElementsByIdLike("f[0-9]+", "gardenarea").All(s => !squareFilter(s));
-                if (Browser.WaitFor(successAssertion, 1000, 8000))
+                if (Browser.WaitFor(successAssertion, Browser.WAIT_TIME, 5 * Browser.WAIT_TIME))
                     return true;
             }
             return false;
+        }
+
+        private static void cleanFieldFromJunk() {
+            for (int i = 1; i <= 120; i++) {
+                var square = Browser.GetElementById("f" + i);
+                if (isJunk(square)) {
+                    Browser.Click(square);
+                    Browser.WaitForId("globalbox_button1");
+                    Browser.Click("globalbox_button1");
+                    Browser.WaitForIdGone("globalbox_button1");
+                }
+            }
         }
 
         private static HtmlElement assertInnerSquare(HtmlElement square) {
@@ -204,13 +228,13 @@ namespace WFManager {
 
                 // Collect Eggs
                 Browser.TryClick("globalbox_button1");
-                Browser.Wait(2000);
+                Browser.Wait(2 * Browser.WAIT_TIME);
 
                 var feedline = Browser.GetElementById("building_inner_feedline_normal");
                 if (feedline.Children.Count > 0 && !Browser.GetChildrenByClass(feedline, "transparent").Any()) {
                     // Feed Chickens
                     giveFood(cheaperFood.ID, feedFull);
-                    Browser.WaitForId("production_info_time", 5000);
+                    Browser.WaitForId("production_info_time", 5 * Browser.WAIT_TIME);
                 }
 
                 // Check production time
@@ -222,7 +246,7 @@ namespace WFManager {
 
                 // Close Henhouse
                 Browser.TryClick("building_inner", "big_close");
-                Browser.Wait(1000);
+                Browser.WaitForClassGone("animal2");
             }
 
             return productionTime;

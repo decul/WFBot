@@ -44,36 +44,33 @@ namespace WFManager {
                 events.Add(new Event(DateTime.Now, EventType.CUT_WOOD));
 
             
+
             while (!stopped) {
                 Browser.Wait(1000);
-
+                
                 foreach (var ev in events) {
                     try {
                         if (ev.date <= DateTime.Now) {
                             WF.LogIn();
                             switch (ev.type) {
                                 case EventType.PRICES_UPDATE:
-                                    if (DateTime.Now.Hour > 19) {
-                                        ElFarmado.UpdatePrices();
-                                        ev.date = DateTime.Now.AddHours(6);
-                                    }
-                                    else {
-                                        ev.date = DateTime.Now.AddMinutes(10);
-                                    }
+                                    ElFarmado.UpdatePrices();
+                                    if (ev.date > DateTime.Now - TimeSpan.FromHours(0.5))
+                                        ev.date += TimeSpan.FromHours(1);
+                                    else
+                                        ev.date = DateTime.Now + TimeSpan.FromHours(1);
                                     break;
 
-                                    //ElFarmado.UpdatePrices();
-                                    //if (ev.date > DateTime.Now - TimeSpan.FromHours(0.5))
-                                    //    ev.date += TimeSpan.FromHours(1);
-                                    //else
-                                    //    ev.date = DateTime.Now + TimeSpan.FromHours(1);
-                                    //break;
-
                                 case EventType.CROP:
-                                    int productId = V.Bławatki;
-                                    if (DateTime.Now.Hour > 3 && DateTime.Now.Hour < 14)
-                                        productId = V.Cebule;
-                                    ev.date = DateTime.Now + Farm.SowFields(productId);
+                                    var strategy = SowStrategy.Load();
+                                    int productId = strategy.Last().ProductId;
+                                    foreach (var st in strategy) {
+                                        if (st.EndHour > DateTime.Now.Hour) {
+                                            productId = st.ProductId;
+                                            break;
+                                        }
+                                    }
+                                    ev.date = DateTime.Now + Farm.SowFields(productId).Add(TimeSpan.FromMinutes(1));
                                     break;
 
                                 case EventType.FEED_CHICKENS:
@@ -116,7 +113,7 @@ namespace WFManager {
                     }
                     catch (Exception e) {
                         var type = e.GetType();
-                        Logger.Error(e.Message + "\n\n" + e.StackTrace);
+                        Logger.Error(e);
                     }
 
                     if (stopped)

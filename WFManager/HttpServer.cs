@@ -57,7 +57,7 @@ namespace WFManager {
                 context.Response.Close();
             }
             catch (Exception e) {
-                Logger.Error(e.ToString());
+                Logger.Error(e);
             }
 
             listener.BeginGetContext(Recive, listener);

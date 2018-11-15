@@ -69,7 +69,7 @@ namespace WFManager {
                     if (subject == null)
                         break;
                     subject.InvokeMember("click");
-                    Browser.Wait(2000);
+                    Browser.Wait(2 * Browser.WAIT_TIME);
 
                     string message = Browser.GetSiblingsByClass(subject, "messages_list_body").First().Children[0].InnerText.Replace("\n", " ");
                     string sender = Browser.GetSiblingsByClass(subject, "messages_list_name").First().InnerText;
@@ -87,7 +87,7 @@ namespace WFManager {
                     if (subject == null)
                         break;
                     subject.InvokeMember("click");
-                    Browser.Wait(2000);
+                    Browser.Wait();
 
                     string message = Browser.GetSiblingsByClass(subject, "messages_list_body").First().Children[0].InnerText.Replace("\n", " ");
 
@@ -96,7 +96,7 @@ namespace WFManager {
 
                 // Close Mail box
                 Browser.InvokeScript("messagesClose");
-                Browser.Wait(1000);
+                Browser.Wait();
             }
 
             exclamation = Browser.GetElementById("mainmenue3_incoming");
@@ -116,7 +116,35 @@ namespace WFManager {
 
                 // Close Contracts
                 Browser.InvokeScript("contractsClose");
-                Browser.Wait(1000);
+                Browser.Wait();
+            }
+        }
+
+
+
+        static public void SendContract() {
+            Browser.Click("mainmenue3");
+            Browser.WaitForId("contracts_navi_new");
+            Browser.Click("contracts_navi_new");
+            Browser.WaitForId("contracts_new_category_products");
+
+            Browser.InvokeScript("contractsShowContactsList");
+            Browser.WaitForId("contracts_new_cart_contactlist_inner");
+            Browser.Click("contracts_new_cart_contactlist_inner", "messages_contacts_link_item");
+
+            foreach (var vegetable in SowStrategy.Vegetables) {
+                int storeQty = Util.ParseQty(Browser.GetElementById("contracts_new_tt" + vegetable.ID).InnerText);
+                int minQty = 6 * 120 / vegetable.Size;
+                int sellQty = storeQty - minQty;
+
+                if (sellQty > 0) {
+                    Browser.InvokeScript("contractsDialog", new string[] { "select", vegetable.ID.ToString() });
+                    Browser.WaitForId("contracts_select_pid_input");
+                    Browser.SetValue("contracts_select_pid_input", sellQty.ToString());
+                    Browser.SetValue("contracts_select_price_input", vegetable.SellPrice.ToString());
+                    Browser.Click("contracts_button_add_cart");
+                    Browser.Wait();
+                }
             }
         }
 
@@ -199,8 +227,8 @@ namespace WFManager {
         }
         
         private static void updateWoods() {
-            updateProductInfo(Store.Seedlings, "newhelp_menue_item_products_f", "f_m_symbol1", 0, 8);
-            updateProductInfo(Store.Woods, "newhelp_menue_item_products_f", "f_m_symbol1", 8, 8);
+            updateProductInfo(Store.Seedlings, "newhelp_menue_item_products_f", "f_m_symbol1", 0, 9);
+            updateProductInfo(Store.Woods, "newhelp_menue_item_products_f", "f_m_symbol1", 9, 9);
 
             foreach(var wood in Store.Woods.Values) {
                 var subName = wood.Name.Substring(6, 3).ToLower();

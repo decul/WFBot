@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace WFManager {
     public class ElFarmado {
 
-        static public void UpdatePrices() {
+        static private void goToMarket() {
             // Go to Map
             Browser.Click("mainmenue1");
             Browser.WaitForId("map_city1");
@@ -21,6 +21,10 @@ namespace WFManager {
             // Go to Market
             Browser.Click("cityzone_1_5");
             Browser.WaitForId("market_navi5");
+        }
+
+        static public void UpdatePrices() {
+            goToMarket();
 
             // Go to All products
             Browser.Click("market_navi5");
@@ -33,7 +37,12 @@ namespace WFManager {
 
                 // Go to Product category
                 Browser.Click("market_navi_cat" + cat);
-                Browser.Wait(2000);
+                switch (cat) {
+                    case 1:     Browser.WaitForClass("tt1", "marketcategories");    break;
+                    case 2:     Browser.WaitForClass("tt9", "marketcategories");    break;
+                    case 3:     Browser.WaitForClass("tt130", "marketcategories");  break;
+                    default:    Browser.Wait(2 * Browser.WAIT_TIME);                break;
+                }
                 
                 int productsCount = Browser.GetChildrenByClass(Browser.GetElementById("marketcategories"), "market_pframe").Count;
                 for (int p = 0; p < productsCount; p++) {
@@ -72,12 +81,45 @@ namespace WFManager {
             var firstRow = Browser.GetElementById("marktoffers_rows").FirstChild;
             if (firstRow.All.Count < 2)
                 return null;
-            string priceStr = Browser.GetChildrenByClass(firstRow, "market_price").First().InnerText
-                        .Split(new string[] { "ft" }, StringSplitOptions.RemoveEmptyEntries).First().Trim();
-            priceStr = Regex.Replace(priceStr, "[^0-9,]", "").Replace(',', '.');
-            return double.Parse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture);
+            return Util.ParsePrice(Browser.GetChildrenByClass(firstRow, "market_price").First().InnerText);
         }
 
+
+
+        public static void sellHarvest() {
+            goToMarket();
+
+            foreach (var veg in SowStrategy.Vegetables) {
+                // Go to All products
+                Browser.Click("market_navi5");
+                Browser.WaitForId("marketcategories");
+
+                // Go to Make offer
+                Browser.Click("market_navi2");
+                Browser.WaitForId("market_select_control");
+
+                Browser.InvokeScript("selectMarketProduct", veg.ID.ToString());
+                Browser.WaitForId("marketcreateoffer_stockamount");
+
+                int storeQty = Util.ParseQty(Browser.GetElementById("marketcreateoffer_stockamount").InnerText);
+                int minQty = 6 * 120 / veg.Size;
+                int sellQty = storeQty - minQty;
+
+                if (sellQty > 0) {
+                    string price = (veg.BuyPrice - 0.01).ToString();
+
+                    Browser.SetValue("marketnewoffer_amount", sellQty.ToString());
+                    Browser.SetValue("marketnewoffer_price1", price.Split(',')[0]);
+                    Browser.SetValue("marketnewoffer_price2", price.Split(',')[1]);
+                    Browser.Click("market_new_button", "bigme");
+                }
+                else {
+                    Browser.InvokeScript("closeMarketNewOffer");
+                }
+
+                Browser.WaitForIdGone("marketnewoffer_setup");
+            }
+        }
 
     }
 }
